@@ -1,9 +1,9 @@
 import '@webcomponents/custom-elements';
-import { EmojiPipeline } from './emoji.js';
+import {getModalContainer, getComposePostModal} from './elementsFinder';
+import {EmojiPipeline} from './emoji';
 
-const MODAL_CONTAINER_SELECTOR = '#root > div > div > div:nth-child(6)';
 
-const modalContainer = document.querySelector(MODAL_CONTAINER_SELECTOR);
+const modalContainer = getModalContainer();
 
 const emojiPipeline = new EmojiPipeline();
 const pipelines = [emojiPipeline];
@@ -11,7 +11,8 @@ const pipelines = [emojiPipeline];
 const observer = new MutationObserver(mutations => {
   mutations.forEach(mutation => {
     if (mutation.target === modalContainer) {
-      if (EmojiPipeline.isEligible(modalContainer)) {
+      const composePostModal = getComposePostModal(modalContainer);
+      if (composePostModal !== null) {
         emojiPipeline.deploy(modalContainer);
       } else {
         for (const pipeline of pipelines) {

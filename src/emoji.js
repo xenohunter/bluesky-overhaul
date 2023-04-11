@@ -1,11 +1,6 @@
 import data from '@emoji-mart/data';
-import { Picker } from 'emoji-mart';
-
-const LAST_TAB_INDEX = 0;
-
-const COMPOSE_POST_SELECTOR = '[data-testid="composePostView"]';
-const BUTTON_ROW_SELECTOR = 'div[tabindex] > div:nth-child(3)';
-const PHOTO_BUTTON_SELECTOR = `div[tabIndex="${LAST_TAB_INDEX}"]`;
+import {Picker} from 'emoji-mart';
+import {getButtonRow, getComposePostModal, getPhotoButton, LAST_NATIVE_TAB_INDEX} from './elementsFinder';
 
 
 const createEmojiPopup = (modal, emojiButton) => {
@@ -31,15 +26,15 @@ export class EmojiPipeline {
   deploy(modalContainer) {
     if (this.modal !== null) return;
 
-    this.modal = EmojiPipeline.getComposePostModal(modalContainer);
+    this.modal = getComposePostModal(modalContainer);
     this.picker = this.createPicker();
 
-    this.buttonRow = this.modal.querySelector(BUTTON_ROW_SELECTOR);
-    this.photoButton = this.buttonRow.querySelector(PHOTO_BUTTON_SELECTOR);
+    this.buttonRow = getButtonRow(this.modal);
+    this.photoButton = getPhotoButton(this.buttonRow);
     this.emojiButton = this.photoButton.cloneNode(false);
 
     this.emojiButton.innerHTML = '😀';
-    this.emojiButton.setAttribute('tabIndex', `${LAST_TAB_INDEX + 1}`);
+    this.emojiButton.setAttribute('tabIndex', `${LAST_NATIVE_TAB_INDEX + 1}`);
 
     this.photoButton.insertAdjacentElement('afterend', this.emojiButton);
 
@@ -89,13 +84,5 @@ export class EmojiPipeline {
 
   getContentEditable() {
     return this.modal.querySelector('div.ProseMirror');
-  }
-
-  static getComposePostModal(modalContainer) {
-    return modalContainer.querySelector(COMPOSE_POST_SELECTOR);
-  }
-
-  static isEligible(modalContainer) {
-    return EmojiPipeline.getComposePostModal(modalContainer) !== null;
   }
 }
