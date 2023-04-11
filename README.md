@@ -13,3 +13,10 @@ This is what's ready, and you also may request new features in issues.
 #### Emoji picker
 
 ![emoji-picker.png](docs/emoji-picker.png)
+
+### Local build
+
+```
+npm install
+npx webpack
+```
