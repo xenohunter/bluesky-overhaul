@@ -12,4 +12,4 @@ This is what's ready, and you also may request new features in issues.
 
 #### Emoji picker
 
-![emoji-picker.png](https://github.com/xenohunter/bluesky-overhaul/docs/emoji-picker.png)
+![emoji-picker.png](docs/emoji-picker.png)
