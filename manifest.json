@@ -1,0 +1,11 @@
+{
+  "name": "Bluesky Overhaul",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "description": "Improves UI and UX for Bluesky web app",
+  "permissions": ["activeTab"],
+  "content_scripts": [{
+    "matches": ["https://staging.bsky.app/*"],
+    "js": ["dist/bundle.js"]
+  }]
+}
