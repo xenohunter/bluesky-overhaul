@@ -23,7 +23,7 @@ const createEmojiPopup = (modal, emojiButton) => {
 
 
 export class EmojiPipeline {
-  constructor(props) {
+  constructor() {
     this.modal = null;
     this.expanded = false;
   }

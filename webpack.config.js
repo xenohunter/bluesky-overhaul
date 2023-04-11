@@ -1,5 +1,5 @@
 module.exports = {
-  entry: './content.js',
+  entry: './src/content.js',
   mode: 'development',
   devtool: 'source-map',
   output: {
