@@ -2,7 +2,6 @@ import data from '@emoji-mart/data';
 import {Picker} from 'emoji-mart';
 import {getButtonRow, getComposePostModal, getContentEditable, getPhotoButton, LAST_TAB_INDEX} from './elementsFinder';
 
-
 const createEmojiPopup = (modal, emojiButton) => {
   const emojiPopup = document.createElement('div');
   emojiPopup.style.position = 'absolute';
@@ -15,7 +14,6 @@ const createEmojiPopup = (modal, emojiButton) => {
 
   return emojiPopup;
 };
-
 
 export class EmojiPipeline {
   constructor() {

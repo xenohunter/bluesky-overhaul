@@ -39,7 +39,6 @@ export class QuotePostPipeline {
     document.execCommand('insertHTML', false, ' ');
 
     setTimeout(() => {
-      console.log('cleanup and click');
       document.execCommand('delete', false, null);
       const linkButton = getLinkButton(this.modal);
       if (linkButton !== null) {

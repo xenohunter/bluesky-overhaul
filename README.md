@@ -21,6 +21,10 @@ When you paste a link to someone's post:
 - clicks the "Add link card" button for you
 - **only works if the URL is at the end of the pasted text**
 
+#### Exit post composing modal window
+
+You can now exit the modal window by pressing `Esc` or clicking outside of it.
+
 ### Local build
 
 ```
