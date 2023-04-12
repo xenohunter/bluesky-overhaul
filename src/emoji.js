@@ -16,9 +16,12 @@ const createEmojiPopup = (modal, emojiButton) => {
 };
 
 export class EmojiPipeline {
-  constructor() {
+  constructor(pauseExitModal, resumeExitModal) {
     this.modal = null;
+    this.callback = null;
     this.expanded = false;
+    this.pauseExitModal = pauseExitModal;
+    this.resumeExitModal = resumeExitModal;
   }
 
   deploy(modalContainer) {
@@ -40,28 +43,15 @@ export class EmojiPipeline {
     this.emojiPopup.appendChild(this.picker);
     this.modal.appendChild(this.emojiPopup);
 
-    this.emojiButton.addEventListener('click', () => {
-      if (this.expanded) return;
-
-      this.emojiPopup.style.display = 'block';
-      this.expanded = true;
-
-      const clickOutside = (event) => {
-        if (this.emojiPopup && !this.emojiPopup.contains(event.target) && event.target !== this.emojiButton) {
-          this.emojiPopup.style.display = 'none';
-          this.expanded = false;
-          this.modal.removeEventListener('click', clickOutside);
-          document.removeEventListener('click', clickOutside);
-        }
-      };
-
-      this.modal.addEventListener('click', clickOutside);
-      document.addEventListener('click', clickOutside);
-    });
+    this.callback = this.onClick.bind(this);
+    this.emojiButton.addEventListener('click', this.callback);
   }
 
   terminate() {
     if (this.modal === null) return;
+
+    this.emojiButton.removeEventListener('click', this.callback);
+    this.callback = null;
 
     try { this.emojiPopup.removeChild(this.picker); } catch (e) {}
     try { this.modal.removeChild(this.emojiPopup); } catch (e) {}
@@ -78,5 +68,26 @@ export class EmojiPipeline {
         document.execCommand('insertText', false, emoji.native);
       }
     });
+  }
+
+  onClick() {
+    if (this.expanded) return;
+
+    this.emojiPopup.style.display = 'block';
+    this.expanded = true;
+    this.pauseExitModal();
+
+    const clickOutside = (event) => {
+      if (this.emojiPopup && !this.emojiPopup.contains(event.target) && event.target !== this.emojiButton) {
+        this.emojiPopup.style.display = 'none';
+        this.expanded = false;
+        this.modal.removeEventListener('click', clickOutside);
+        document.removeEventListener('click', clickOutside);
+        this.resumeExitModal();
+      }
+    };
+
+    this.modal.addEventListener('click', clickOutside);
+    document.addEventListener('click', clickOutside);
   }
 }

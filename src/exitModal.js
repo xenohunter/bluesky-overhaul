@@ -1,11 +1,10 @@
 import {getComposePostModal, getExitButton} from './elementsFinder';
 
-const EVENT_OPTIONS = {once: true};
-
 export class ExitModalPipeline {
   constructor() {
     this.modal = null;
     this.callbacks = {};
+    this.paused = false;
   }
 
   deploy(modalContainer) {
@@ -18,14 +17,23 @@ export class ExitModalPipeline {
     this.callbacks.keydown = this.onEscape.bind(this);
     this.callbacks.stop = this.removeEvents.bind(this);
 
-    document.addEventListener('click', this.callbacks.click, EVENT_OPTIONS);
-    document.addEventListener('keydown', this.callbacks.keydown, EVENT_OPTIONS);
-    this.exitButton.addEventListener('click', this.callbacks.stop, EVENT_OPTIONS);
+    document.addEventListener('click', this.callbacks.click);
+    document.addEventListener('keydown', this.callbacks.keydown);
+    this.exitButton.addEventListener('click', this.callbacks.stop);
+  }
+
+  pause() {
+    this.paused = true;
+  }
+
+  resume() {
+    this.paused = false;
   }
 
   terminate() {
     if (this.modal === null) return;
 
+    this.removeEvents();
     this.modal = this.exitButton = null;
     this.callbacks = {};
   }
@@ -37,14 +45,14 @@ export class ExitModalPipeline {
   }
 
   onClick(event) {
-    if (this.modal && !this.modal.contains(event.target) && event.target !== this.exitButton) {
+    if (!this.paused && this.modal && !this.modal.contains(event.target) && event.target !== this.exitButton) {
       this.removeEvents();
       this.exitButton.click();
     }
   }
 
   onEscape(event) {
-    if (event.key === 'Escape') {
+    if (!this.paused && event.key === 'Escape') {
       this.removeEvents();
       this.exitButton.click();
     }

@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Check there is no TODO! in the code
+if grep -r "TODO!" ./src; then
+  echo "TODO! found in code"
+  exit 1
+fi
+
 # Check if jq is installed
 if ! command -v jq &> /dev/null
 then

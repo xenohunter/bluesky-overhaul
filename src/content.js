@@ -1,15 +1,18 @@
 import '@webcomponents/custom-elements';
 import {getModalContainer, getComposePostModal} from './elementsFinder';
+import {ExitModalPipeline} from './exitModal';
 import {EmojiPipeline} from './emoji';
 import {QuotePostPipeline} from './quotePost';
-import {ExitModalPipeline} from './exitModal';
 
 const modalContainer = getModalContainer();
 
-const emojiPipeline = new EmojiPipeline();
-const quotePostPipeline = new QuotePostPipeline();
 const exitModalPipeline = new ExitModalPipeline();
-const pipelines = [emojiPipeline, quotePostPipeline, exitModalPipeline];
+const pauseExitModal = exitModalPipeline.pause.bind(exitModalPipeline);
+const resumeExitModal = exitModalPipeline.resume.bind(exitModalPipeline);
+
+const emojiPipeline = new EmojiPipeline(pauseExitModal, resumeExitModal);
+const quotePostPipeline = new QuotePostPipeline();
+const pipelines = [exitModalPipeline, emojiPipeline, quotePostPipeline];
 
 const observer = new MutationObserver(mutations => {
   mutations.forEach(mutation => {

@@ -20,6 +20,7 @@ When you paste a link to someone's post:
 - removes "staging." from the URL
 - clicks the "Add link card" button for you
 - **only works if the URL is at the end of the pasted text**
+- you can remove the link from the text after the card is loaded
 
 #### Exit post composing modal window
 
