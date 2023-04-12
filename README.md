@@ -26,6 +26,10 @@ When you paste a link to someone's post:
 
 You can now exit the modal window by pressing `Esc` or clicking outside of it.
 
+#### Send posts with `Ctrl+Enter`
+
+That's pretty much self-explanatory.
+
 ### Local build
 
 ```
