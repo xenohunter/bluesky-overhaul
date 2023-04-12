@@ -1,6 +1,9 @@
 import data from '@emoji-mart/data';
 import {Picker} from 'emoji-mart';
 import {getButtonRow, getComposePostModal, getContentEditable, getPhotoButton, LAST_TAB_INDEX} from './elementsFinder';
+import {Cursor} from './cursor';
+
+const EMOJI_CHARACTER_LENGTH = 2;
 
 const createEmojiPopup = (modal, emojiButton) => {
   const emojiPopup = document.createElement('div');
@@ -29,6 +32,7 @@ export class EmojiPipeline {
 
     this.modal = getComposePostModal(modalContainer);
     this.picker = this.createPicker();
+    this.cursor = null;
 
     this.buttonRow = getButtonRow(this.modal);
     this.photoButton = getPhotoButton(this.buttonRow);
@@ -56,7 +60,8 @@ export class EmojiPipeline {
     try { this.emojiPopup.removeChild(this.picker); } catch (e) {}
     try { this.modal.removeChild(this.emojiPopup); } catch (e) {}
     try { this.buttonRow.removeChild(this.emojiButton); } catch (e) {}
-    this.modal = this.picker = this.buttonRow = this.photoButton = this.emojiButton = this.emojiPopup = null;
+    this.modal = this.buttonRow = this.photoButton = this.emojiButton = this.emojiPopup = null;
+    this.picker = this.cursor = null;
   }
 
   createPicker() {
@@ -64,14 +69,19 @@ export class EmojiPipeline {
       data,
       emojiSize: 22,
       onEmojiSelect: emoji => {
-        getContentEditable(this.modal).focus();
+        this.cursor.restore();
         document.execCommand('insertText', false, emoji.native);
+        this.cursor.move(EMOJI_CHARACTER_LENGTH);
       }
     });
   }
 
   onClick() {
     if (this.expanded) return;
+
+    const contentEditable = getContentEditable(this.modal);
+    this.cursor = new Cursor(contentEditable);
+    this.cursor.save();
 
     this.emojiPopup.style.display = 'block';
     this.expanded = true;
