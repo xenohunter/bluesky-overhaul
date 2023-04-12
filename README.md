@@ -14,6 +14,13 @@ This is what's ready, and you also may request new features in issues.
 
 ![emoji-picker.png](docs/emoji-picker.png)
 
+#### Auto quote-posting
+
+When you paste a link to someone's post:
+- removes "staging." from the URL
+- clicks the "Add link card" button for you
+- **only works if the URL is at the end of the pasted text**
+
 ### Local build
 
 ```

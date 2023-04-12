@@ -1,6 +1,6 @@
 import data from '@emoji-mart/data';
 import {Picker} from 'emoji-mart';
-import {getButtonRow, getComposePostModal, getPhotoButton, LAST_NATIVE_TAB_INDEX} from './elementsFinder';
+import {getButtonRow, getComposePostModal, getContentEditable, getPhotoButton, LAST_TAB_INDEX} from './elementsFinder';
 
 
 const createEmojiPopup = (modal, emojiButton) => {
@@ -34,7 +34,7 @@ export class EmojiPipeline {
     this.emojiButton = this.photoButton.cloneNode(false);
 
     this.emojiButton.innerHTML = '😀';
-    this.emojiButton.setAttribute('tabIndex', `${LAST_NATIVE_TAB_INDEX + 1}`);
+    this.emojiButton.setAttribute('tabIndex', `${LAST_TAB_INDEX + 1}`);
 
     this.photoButton.insertAdjacentElement('afterend', this.emojiButton);
 
@@ -63,12 +63,12 @@ export class EmojiPipeline {
   }
 
   terminate() {
-    if (this.modal !== null) {
-      try { this.emojiPopup.removeChild(this.picker); } catch (e) {}
-      try { this.modal.removeChild(this.emojiPopup); } catch (e) {}
-      try { this.buttonRow.removeChild(this.emojiButton); } catch (e) {}
-      this.modal = this.picker = this.buttonRow = this.photoButton = this.emojiButton = this.emojiPopup = null;
-    }
+    if (this.modal === null) return;
+
+    try { this.emojiPopup.removeChild(this.picker); } catch (e) {}
+    try { this.modal.removeChild(this.emojiPopup); } catch (e) {}
+    try { this.buttonRow.removeChild(this.emojiButton); } catch (e) {}
+    this.modal = this.picker = this.buttonRow = this.photoButton = this.emojiButton = this.emojiPopup = null;
   }
 
   createPicker() {
@@ -76,13 +76,9 @@ export class EmojiPipeline {
       data,
       emojiSize: 22,
       onEmojiSelect: emoji => {
-        this.getContentEditable().focus();
+        getContentEditable(this.modal).focus();
         document.execCommand('insertText', false, emoji.native);
       }
     });
-  }
-
-  getContentEditable() {
-    return this.modal.querySelector('div.ProseMirror');
   }
 }
