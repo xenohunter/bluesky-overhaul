@@ -1,6 +1,6 @@
 {
   "name": "bluesky-overhaul",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "dependencies": {
     "@emoji-mart/data": "^1.1.2",
     "@webcomponents/custom-elements": "^1.6.0",

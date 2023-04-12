@@ -1,18 +1,18 @@
 import '@webcomponents/custom-elements';
 import {getModalContainer, getComposePostModal} from './elementsFinder';
-import {ExitModalPipeline} from './exitModal';
+import {PostModalPipeline} from './postModal';
 import {EmojiPipeline} from './emoji';
 import {QuotePostPipeline} from './quotePost';
 
 const modalContainer = getModalContainer();
 
-const exitModalPipeline = new ExitModalPipeline();
-const pauseExitModal = exitModalPipeline.pause.bind(exitModalPipeline);
-const resumeExitModal = exitModalPipeline.resume.bind(exitModalPipeline);
+const postModalPipeline = new PostModalPipeline();
+const pauseExitModal = postModalPipeline.pauseExit.bind(postModalPipeline);
+const resumeExitModal = postModalPipeline.resumeExit.bind(postModalPipeline);
 
 const emojiPipeline = new EmojiPipeline(pauseExitModal, resumeExitModal);
 const quotePostPipeline = new QuotePostPipeline();
-const pipelines = [exitModalPipeline, emojiPipeline, quotePostPipeline];
+const pipelines = [postModalPipeline, emojiPipeline, quotePostPipeline];
 
 const observer = new MutationObserver(mutations => {
   mutations.forEach(mutation => {
@@ -21,7 +21,7 @@ const observer = new MutationObserver(mutations => {
       if (composePostModal !== null) {
         emojiPipeline.deploy(modalContainer);
         quotePostPipeline.deploy(modalContainer);
-        exitModalPipeline.deploy(modalContainer);
+        postModalPipeline.deploy(modalContainer);
       } else {
         for (const pipeline of pipelines) {
           pipeline.terminate();

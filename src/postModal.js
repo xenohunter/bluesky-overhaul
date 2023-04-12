@@ -1,6 +1,6 @@
-import {getComposePostModal, getExitButton} from './elementsFinder';
+import {getComposePostModal, getContentEditable, getExitButton, getPostButton} from './elementsFinder';
 
-export class ExitModalPipeline {
+export class PostModalPipeline {
   constructor() {
     this.modal = null;
     this.callbacks = {};
@@ -14,20 +14,17 @@ export class ExitModalPipeline {
     this.exitButton = getExitButton(this.modal);
 
     this.callbacks.click = this.onClick.bind(this);
-    this.callbacks.keydown = this.onEscape.bind(this);
+    this.callbacks.keydown = this.onKeydown.bind(this);
     this.callbacks.stop = this.removeEvents.bind(this);
 
     document.addEventListener('click', this.callbacks.click);
     document.addEventListener('keydown', this.callbacks.keydown);
     this.exitButton.addEventListener('click', this.callbacks.stop);
-  }
 
-  pause() {
-    this.paused = true;
-  }
-
-  resume() {
-    this.paused = false;
+    setTimeout(() => {
+      this.contentEditable = getContentEditable(this.modal);
+      this.contentEditable.addEventListener('keydown', this.callbacks.keydown);
+    }, 0);
   }
 
   terminate() {
@@ -38,10 +35,19 @@ export class ExitModalPipeline {
     this.callbacks = {};
   }
 
+  pauseExit() {
+    this.paused = true;
+  }
+
+  resumeExit() {
+    this.paused = false;
+  }
+
   removeEvents() {
     try { document.removeEventListener('click', this.callbacks.click); } catch (e) {}
     try { document.removeEventListener('keydown', this.callbacks.keydown); } catch (e) {}
     try { this.exitButton.removeEventListener('click', this.callbacks.stop); } catch (e) {}
+    try { this.contentEditable.removeEventListener('keydown', this.callbacks.keydown); } catch (e) {}
   }
 
   onClick(event) {
@@ -51,10 +57,13 @@ export class ExitModalPipeline {
     }
   }
 
-  onEscape(event) {
+  onKeydown(event) {
     if (!this.paused && event.key === 'Escape') {
       this.removeEvents();
       this.exitButton.click();
+    } else if (!this.paused && event.key === 'Enter' && event.ctrlKey) {
+      this.removeEvents();
+      getPostButton(this.modal).click();
     }
   }
 }
