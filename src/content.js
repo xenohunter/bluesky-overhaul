@@ -1,8 +1,8 @@
 import '@webcomponents/custom-elements';
-import {getModalContainer, getComposePostModal} from './elementsFinder';
-import {PostModalPipeline} from './postModal';
-import {EmojiPipeline} from './emoji';
-import {QuotePostPipeline} from './quotePost';
+import {getModalContainer, getComposePostModal} from './utils/elementsFinder';
+import {PostModalPipeline} from './pipelines/postModal';
+import {EmojiPipeline} from './pipelines/emoji';
+import {QuotePostPipeline} from './pipelines/quotePost';
 
 const modalContainer = getModalContainer();
 

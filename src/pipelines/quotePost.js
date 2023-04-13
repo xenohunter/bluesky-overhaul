@@ -1,4 +1,4 @@
-import {getComposePostModal, getContentEditable, getLinkButton} from './elementsFinder';
+import {getComposePostModal, getContentEditable, getLinkButton} from '../utils/elementsFinder';
 
 const URL_REGEX = /.*https:\/\/staging\.bsky\.app\/profile\/.*\/post\/.*\/?$/;
 const EVENT_OPTIONS = {capture: true};
@@ -42,7 +42,7 @@ export class QuotePostPipeline {
       document.execCommand('delete', false, null);
       const linkButton = getLinkButton(this.modal);
       if (linkButton !== null) {
-        linkButton.click();
+        linkButton.click(); // TODO : only click if the link is to a post
         // TODO : remove the URL if the contents of this.contentEditable ends with it
       }
     }, 50);

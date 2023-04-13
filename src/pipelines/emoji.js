@@ -1,7 +1,13 @@
 import data from '@emoji-mart/data';
 import {Picker} from 'emoji-mart';
-import {getButtonRow, getComposePostModal, getContentEditable, getPhotoButton, LAST_TAB_INDEX} from './elementsFinder';
-import {Cursor} from './cursor';
+import {Cursor} from '../utils/cursor';
+import {
+  getButtonRow,
+  getComposePostModal,
+  getContentEditable,
+  getPhotoButton,
+  LAST_TAB_INDEX
+} from '../utils/elementsFinder';
 
 const EMOJI_CHARACTER_LENGTH = 2;
 
@@ -57,9 +63,18 @@ export class EmojiPipeline {
     this.emojiButton.removeEventListener('click', this.callback);
     this.callback = null;
 
-    try { this.emojiPopup.removeChild(this.picker); } catch (e) {}
-    try { this.modal.removeChild(this.emojiPopup); } catch (e) {}
-    try { this.buttonRow.removeChild(this.emojiButton); } catch (e) {}
+    try {
+      this.emojiPopup.removeChild(this.picker);
+    } catch (e) {
+    }
+    try {
+      this.modal.removeChild(this.emojiPopup);
+    } catch (e) {
+    }
+    try {
+      this.buttonRow.removeChild(this.emojiButton);
+    } catch (e) {
+    }
     this.modal = this.buttonRow = this.photoButton = this.emojiButton = this.emojiPopup = null;
     this.picker = this.cursor = null;
   }

@@ -1,4 +1,4 @@
-export class SelectionController {
+export class Selection {
   // Courtesy of https://stackoverflow.com/a/62700928/1887427 + some cosmetic fixes (const, let, etc)
 
   static getCurrentCursorPosition(parentElement) {
@@ -7,7 +7,7 @@ export class SelectionController {
     let node = null;
 
     if (selection.focusNode) {
-      if (SelectionController._isChildOf(selection.focusNode, parentElement)) {
+      if (Selection._isChildOf(selection.focusNode, parentElement)) {
         node = selection.focusNode;
         charCount = selection.focusOffset;
 
@@ -30,7 +30,7 @@ export class SelectionController {
   static setCurrentCursorPosition(chars, element) {
     if (chars >= 0) {
       const selection = window.getSelection();
-      const range = SelectionController._createRange(element, {count: chars});
+      const range = Selection._createRange(element, {count: chars});
 
       if (range) {
         range.collapse(false);
@@ -59,7 +59,7 @@ export class SelectionController {
         }
       } else {
         for (let lp = 0; lp < node.childNodes.length; lp++) {
-          range = SelectionController._createRange(node.childNodes[lp], chars, range);
+          range = Selection._createRange(node.childNodes[lp], chars, range);
           if (chars.count === 0) break;
         }
       }

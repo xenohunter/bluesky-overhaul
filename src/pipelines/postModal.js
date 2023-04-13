@@ -1,4 +1,4 @@
-import {getComposePostModal, getContentEditable, getExitButton, getPostButton} from './elementsFinder';
+import {getComposePostModal, getContentEditable, getExitButton, getPostButton} from '../utils/elementsFinder';
 
 export class PostModalPipeline {
   constructor() {
