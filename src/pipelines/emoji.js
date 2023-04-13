@@ -8,6 +8,7 @@ import {
   getPhotoButton,
   LAST_TAB_INDEX
 } from '../utils/elementsFinder';
+import {typeText} from '../utils/text';
 
 const EMOJI_CHARACTER_LENGTH = 2;
 
@@ -85,7 +86,7 @@ export class EmojiPipeline {
       emojiSize: 22,
       onEmojiSelect: emoji => {
         this.cursor.restore();
-        document.execCommand('insertText', false, emoji.native);
+        typeText(emoji.native);
         this.cursor.move(EMOJI_CHARACTER_LENGTH);
       }
     });

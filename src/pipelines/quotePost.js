@@ -1,6 +1,8 @@
 import {getComposePostModal, getContentEditable, getLinkButton} from '../utils/elementsFinder';
+import {typeText, backspace} from '../utils/text';
 
-const URL_REGEX = /.*https:\/\/staging\.bsky\.app\/profile\/.*\/post\/.*\/?$/;
+const STAGING_URL_REGEX = /.*(https:\/\/staging\.bsky\.app\/profile\/.*\/post\/.*\/?)$/;
+const URL_REGEX = /.*(https:\/\/bsky\.app\/profile\/.*\/post\/.*\/?)$/;
 const EVENT_OPTIONS = {capture: true};
 
 export class QuotePostPipeline {
@@ -29,22 +31,20 @@ export class QuotePostPipeline {
 
   onPaste(event) {
     event.preventDefault();
+
     let data = event.clipboardData.getData('text/plain');
-    if (data.match(URL_REGEX) !== null) {
+    if (data.match(STAGING_URL_REGEX) !== null) {
       data = data.replace('https://staging.bsky.app/', 'https://bsky.app/');
     }
 
     this.contentEditable.focus();
-    document.execCommand('insertHTML', false, data);
-    document.execCommand('insertHTML', false, ' ');
+    typeText(data);
+    typeText(' ');
 
     setTimeout(() => {
-      document.execCommand('delete', false, null);
-      const linkButton = getLinkButton(this.modal);
-      if (linkButton !== null) {
-        linkButton.click(); // TODO : only click if the link is to a post
-        // TODO : remove the URL if the contents of this.contentEditable ends with it
-      }
+      const lastChar = this.contentEditable.textContent.slice(-1);
+      if (lastChar === ' ') backspace();
+      if (data.match(URL_REGEX) !== null) getLinkButton(this.modal)?.click();
     }, 50);
   }
 }
