@@ -23,3 +23,7 @@ fi
 
 # Run ESLint
 npx eslint ./src
+
+# Build & pack
+npm run build
+npm run pack
