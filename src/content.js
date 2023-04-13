@@ -22,7 +22,7 @@ setTimeout(() => {
         const composePostModal = getComposePostModal(modalContainer);
         if (composePostModal !== null) {
           for (const pipeline of composePostPipelines) {
-            pipeline.deploy(composePostModal, modalType = 'compose');
+            pipeline.deploy(composePostModal, 'compose');
           }
         } else {
           for (const pipeline of composePostPipelines) {
