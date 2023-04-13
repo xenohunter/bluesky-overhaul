@@ -4,31 +4,34 @@ import {PostModalPipeline} from './pipelines/postModal';
 import {EmojiPipeline} from './pipelines/emoji';
 import {QuotePostPipeline} from './pipelines/quotePost';
 
-const modalContainer = getModalContainer();
+setTimeout(() => {
+  const modalContainer = getModalContainer();
 
-const postModalPipeline = new PostModalPipeline();
-const pauseExitModal = postModalPipeline.pauseExit.bind(postModalPipeline);
-const resumeExitModal = postModalPipeline.resumeExit.bind(postModalPipeline);
+  const postModalPipeline = new PostModalPipeline();
+  const pauseExitModal = postModalPipeline.pauseExit.bind(postModalPipeline);
+  const resumeExitModal = postModalPipeline.resumeExit.bind(postModalPipeline);
 
-const emojiPipeline = new EmojiPipeline(pauseExitModal, resumeExitModal);
-const quotePostPipeline = new QuotePostPipeline();
-const pipelines = [postModalPipeline, emojiPipeline, quotePostPipeline];
+  const emojiPipeline = new EmojiPipeline(pauseExitModal, resumeExitModal);
+  const quotePostPipeline = new QuotePostPipeline();
 
-const observer = new MutationObserver(mutations => {
-  mutations.forEach(mutation => {
-    if (mutation.target === modalContainer) {
-      const composePostModal = getComposePostModal(modalContainer);
-      if (composePostModal !== null) {
-        emojiPipeline.deploy(modalContainer);
-        quotePostPipeline.deploy(modalContainer);
-        postModalPipeline.deploy(modalContainer);
-      } else {
-        for (const pipeline of pipelines) {
-          pipeline.terminate();
+  const composePostPipelines = [postModalPipeline, emojiPipeline, quotePostPipeline];
+
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      if (mutation.target === modalContainer) {
+        const composePostModal = getComposePostModal(modalContainer);
+        if (composePostModal !== null) {
+          for (const pipeline of composePostPipelines) {
+            pipeline.deploy(composePostModal, modalType = 'compose');
+          }
+        } else {
+          for (const pipeline of composePostPipelines) {
+            pipeline.terminate();
+          }
         }
       }
-    }
+    });
   });
-});
 
-observer.observe(modalContainer, {childList: true, subtree: true});
+  observer.observe(modalContainer, {childList: true, subtree: true});
+}, 0);

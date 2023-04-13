@@ -1,4 +1,4 @@
-import {getComposePostModal, getContentEditable, getLinkButton} from '../utils/elementsFinder';
+import {getContentEditable, getLinkButton} from '../utils/elementsFinder';
 import {typeText, backspace} from '../utils/text';
 
 const STAGING_URL_REGEX = /.*(https:\/\/staging\.bsky\.app\/profile\/.*\/post\/.*\/?)$/;
@@ -10,10 +10,11 @@ export class QuotePostPipeline {
     this.modal = null;
   }
 
-  deploy(modalContainer) {
+  deploy(modal, modalType = 'compose') {
     if (this.modal !== null) return;
+    if (modalType !== 'compose') throw new Error('QuotePostPipeline only supports compose modal');
 
-    this.modal = getComposePostModal(modalContainer);
+    this.modal = modal;
 
     setTimeout(() => {
       this.callback = this.onPaste.bind(this);

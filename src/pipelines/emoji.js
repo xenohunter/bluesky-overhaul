@@ -1,13 +1,7 @@
 import data from '@emoji-mart/data';
 import {Picker} from 'emoji-mart';
 import {Cursor} from '../utils/cursor';
-import {
-  getButtonRow,
-  getComposePostModal,
-  getContentEditable,
-  getPhotoButton,
-  LAST_TAB_INDEX
-} from '../utils/elementsFinder';
+import {getButtonRow, getContentEditable, getPhotoButton, LAST_TAB_INDEX} from '../utils/elementsFinder';
 import {typeText} from '../utils/text';
 
 const EMOJI_CHARACTER_LENGTH = 2;
@@ -34,10 +28,11 @@ export class EmojiPipeline {
     this.resumeExitModal = resumeExitModal;
   }
 
-  deploy(modalContainer) {
+  deploy(modal, modalType = 'compose') {
     if (this.modal !== null) return;
+    if (modalType !== 'compose') throw new Error('EmojiPipeline only supports compose modal');
 
-    this.modal = getComposePostModal(modalContainer);
+    this.modal = modal;
     this.picker = this.createPicker();
     this.cursor = null;
 

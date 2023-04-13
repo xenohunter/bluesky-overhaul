@@ -1,16 +1,18 @@
-import {getComposePostModal, getContentEditable, getExitButton, getPostButton} from '../utils/elementsFinder';
+import {getContentEditable, getExitButton, getPostButton} from '../utils/elementsFinder';
 
 export class PostModalPipeline {
   constructor() {
     this.modal = null;
+    this.exitButton = null;
     this.callbacks = {};
     this.paused = false;
   }
 
-  deploy(modalContainer) {
+  deploy(modal, modalType = 'compose') {
     if (this.modal !== null) return;
+    if (modalType !== 'compose') throw new Error('PostModalPipeline only supports compose modal');
 
-    this.modal = getComposePostModal(modalContainer);
+    this.modal = modal;
     this.exitButton = getExitButton(this.modal);
 
     this.callbacks.click = this.onClick.bind(this);
