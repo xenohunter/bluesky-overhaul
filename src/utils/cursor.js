@@ -1,4 +1,4 @@
-import {Selection} from './selection';
+import {getCurrentCursorPosition, setCurrentCursorPosition} from './selection';
 
 export class Cursor {
   constructor(contentEditable) {
@@ -7,11 +7,11 @@ export class Cursor {
   }
 
   save() {
-    this.position = Selection.getCurrentCursorPosition(this.contentEditable);
+    this.position = getCurrentCursorPosition(this.contentEditable);
   }
 
   restore() {
-    Selection.setCurrentCursorPosition(this.position, this.contentEditable);
+    setCurrentCursorPosition(this.position, this.contentEditable);
     this.contentEditable.focus();
   }
 
