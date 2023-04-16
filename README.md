@@ -30,6 +30,10 @@ You can now exit the modal window by pressing `Esc` or clicking outside of it.
 
 That's pretty much self-explanatory.
 
+#### Keyboard navigation for photos
+
+You can navigate through photos with `←` and `→` keys and close the modal window with `Esc`.
+
 ### Local build
 
 ```

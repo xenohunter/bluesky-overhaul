@@ -1,11 +1,16 @@
 import '@webcomponents/custom-elements';
 import {getRootContainer, getModalContainer, getComposePostModal} from './utils/elementsFinder';
+import {ArrowKeydownPipeline} from './pipelines/arrowKeydown';
 import {PostModalPipeline} from './pipelines/postModal';
 import {EmojiPipeline} from './pipelines/emoji';
 import {QuotePostPipeline} from './pipelines/quotePost';
 
 setTimeout(() => {
-  const modalContainer = getModalContainer(getRootContainer());
+  const rootContainer = getRootContainer();
+  const modalContainer = getModalContainer(rootContainer);
+
+  const arrowKeydownPipeline = new ArrowKeydownPipeline();
+  arrowKeydownPipeline.deploy(rootContainer);
 
   const postModalPipeline = new PostModalPipeline();
   const pauseExitModal = postModalPipeline.pauseExit.bind(postModalPipeline);
