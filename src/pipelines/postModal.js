@@ -63,7 +63,7 @@ export class PostModalPipeline {
     if (!this.paused && event.key === 'Escape') {
       this.removeEvents();
       this.exitButton.click();
-    } else if (!this.paused && event.key === 'Enter' && event.ctrlKey) {
+    } else if (!this.paused && event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
       this.removeEvents();
       getPostButton(this.modal).click();
     }
