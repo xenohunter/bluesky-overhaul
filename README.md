@@ -1,6 +1,6 @@
 ## Bluesky Overhaul
 
-This is a small (and hopefully temporary) extension for Chrome that adds some nice and handy features to [Bluesky](https://bsky.app/), the greatest media platform of all time.
+This is a small (and hopefully temporary) extension for [Chrome](https://chrome.google.com/webstore/detail/bluesky-overhaul/cllpkmbebfmadmkkpplnaaffnhjjpgbi) (and partially Firefox) that adds some nice and handy features to [Bluesky](https://bsky.app/), the greatest media platform of all time.
 
 Right now (as of April 11, 2023), the app is invite-only and the web app is running at https://staging.bsky.app/ (you may find yours truly at [@blisstweeting.ingroup.social](https://staging.bsky.app/profile/blisstweeting.ingroup.social)).
 
@@ -38,5 +38,9 @@ You can navigate through photos with `←` and `→` keys and close the modal wi
 
 ```
 npm install
-npx webpack
+npm run build
 ```
+
+### Links
+
+- [Bluesky thread of desirable features](https://staging.bsky.app/profile/blisstweeting.ingroup.social/post/3jszn6rreec2i)

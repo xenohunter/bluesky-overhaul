@@ -2,6 +2,7 @@ import data from '@emoji-mart/data';
 import {Picker} from 'emoji-mart';
 import {Cursor} from '../utils/cursor';
 import {getButtonRow, getContentEditable, getPhotoButton, LAST_TAB_INDEX} from '../utils/elementsFinder';
+import {log} from '../utils/logger';
 import {typeText} from '../utils/text';
 
 const EMOJI_CHARACTER_LENGTH = 2;
@@ -29,8 +30,11 @@ export class EmojiPipeline {
   }
 
   deploy(modal, modalType = 'compose') {
-    if (this.modal !== null) return;
     if (modalType !== 'compose') throw new Error('EmojiPipeline only supports compose modal');
+    if (this.modal !== null) {
+      log('EmojiPipeline already deployed');
+      return;
+    }
 
     this.modal = modal;
     this.picker = this.createPicker();
@@ -56,21 +60,12 @@ export class EmojiPipeline {
   terminate() {
     if (this.modal === null) return;
 
-    this.emojiButton.removeEventListener('click', this.callback);
+    try {this.emojiButton.removeEventListener('click', this.callback);} catch (e) {}
     this.callback = null;
 
-    try {
-      this.emojiPopup.removeChild(this.picker);
-    } catch (e) {
-    }
-    try {
-      this.modal.removeChild(this.emojiPopup);
-    } catch (e) {
-    }
-    try {
-      this.buttonRow.removeChild(this.emojiButton);
-    } catch (e) {
-    }
+    try {this.emojiPopup.removeChild(this.picker);} catch (e) {}
+    try {this.modal.removeChild(this.emojiPopup);} catch (e) {}
+    try {this.buttonRow.removeChild(this.emojiButton);} catch (e) {}
     this.modal = this.buttonRow = this.photoButton = this.emojiButton = this.emojiPopup = null;
     this.picker = this.cursor = null;
   }

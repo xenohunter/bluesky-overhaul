@@ -1,3 +1,5 @@
+import {log} from '../utils/logger';
+
 const SVG_ARROW_SELECTOR = 'svg[viewBox="0 0 256 512"][height="40"][width="40"]';
 const MODAL_IMAGE_SELECTOR = 'img[alt][draggable="false"]';
 
@@ -33,7 +35,10 @@ export class ArrowKeydownPipeline {
   }
 
   deploy(rootContainer) {
-    if (this.container !== null) return;
+    if (this.container !== null) {
+      log('ArrowKeydownPipeline already deployed');
+      return;
+    }
 
     this.container = rootContainer;
     this.callback = this.onKeydown.bind(this);

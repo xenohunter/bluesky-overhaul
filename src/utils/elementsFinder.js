@@ -1,10 +1,9 @@
 export const LAST_TAB_INDEX = 0;
 
 const ROOT_CONTAINER_SELECTOR = '#root > div > div';
-const MODAL_CONTAINER_SELECTOR = 'div:nth-child(6)';
 
 export const getRootContainer = () => document.querySelector(ROOT_CONTAINER_SELECTOR);
-export const getModalContainer = (rootContainer) => rootContainer.querySelector(MODAL_CONTAINER_SELECTOR);
+export const getModalContainer = (rootContainer) => rootContainer.lastChild;
 
 const COMPOSE_POST_SELECTOR = '[data-testid="composePostView"]';
 const COMPOSE_CANCEL_BUTTON_SELECTOR = '[data-testid="composerCancelButton"]';

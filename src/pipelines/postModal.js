@@ -1,4 +1,5 @@
 import {getContentEditable, getExitButton, getPostButton} from '../utils/elementsFinder';
+import {log} from '../utils/logger';
 
 export class PostModalPipeline {
   constructor() {
@@ -9,8 +10,11 @@ export class PostModalPipeline {
   }
 
   deploy(modal, modalType = 'compose') {
-    if (this.modal !== null) return;
     if (modalType !== 'compose') throw new Error('PostModalPipeline only supports compose modal');
+    if (this.modal !== null) {
+      log('PostModalPipeline is already deployed');
+      return;
+    }
 
     this.modal = modal;
     this.exitButton = getExitButton(this.modal);

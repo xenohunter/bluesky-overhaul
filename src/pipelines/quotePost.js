@@ -1,4 +1,5 @@
 import {getContentEditable, getLinkButton} from '../utils/elementsFinder';
+import {log} from '../utils/logger';
 import {typeText, backspace} from '../utils/text';
 
 const STAGING_URL_REGEX = /.*(https:\/\/staging\.bsky\.app\/profile\/.*\/post\/.*\/?)$/;
@@ -11,8 +12,11 @@ export class QuotePostPipeline {
   }
 
   deploy(modal, modalType = 'compose') {
-    if (this.modal !== null) return;
     if (modalType !== 'compose') throw new Error('QuotePostPipeline only supports compose modal');
+    if (this.modal !== null) {
+      log('QuotePostPipeline is already deployed');
+      return;
+    }
 
     this.modal = modal;
 
