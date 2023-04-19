@@ -1,5 +1,5 @@
 import '@webcomponents/custom-elements';
-import {ArrowKeydownPipeline} from './pipelines/arrowKeydown';
+import {ArrowKeydownWatcher} from './watchers/arrowKeydown';
 import {PostModalPipeline} from './pipelines/postModal';
 import {EmojiPipeline} from './pipelines/emoji';
 import {QuotePostPipeline} from './pipelines/quotePost';
@@ -13,9 +13,8 @@ const run = () => {
   const rootContainer = getRootContainer();
   const modalContainer = getModalContainer(rootContainer);
 
-  // TODO : make a different abstraction for this (e.g. Watcher instead of Pipeline)
-  const arrowKeydownPipeline = new ArrowKeydownPipeline();
-  arrowKeydownPipeline.deploy(rootContainer);
+  const arrowKeydownPipeline = new ArrowKeydownWatcher();
+  arrowKeydownPipeline.watch(rootContainer);
 
   const postModalPipeline = new PostModalPipeline();
   const pauseExitModal = postModalPipeline.pauseExit.bind(postModalPipeline);

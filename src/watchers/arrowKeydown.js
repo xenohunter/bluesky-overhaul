@@ -29,12 +29,12 @@ const locateArrows = () => {
   return [leftArrow, rightArrow];
 };
 
-export class ArrowKeydownPipeline {
+export class ArrowKeydownWatcher {
   constructor() {
     this.container = null;
   }
 
-  deploy(rootContainer) {
+  watch(rootContainer) {
     if (this.container !== null) {
       log('ArrowKeydownPipeline already deployed');
       return;
@@ -44,12 +44,6 @@ export class ArrowKeydownPipeline {
     this.callback = this.onKeydown.bind(this);
 
     document.addEventListener('keydown', this.callback);
-  }
-
-  terminate() {
-    if (this.container === null) return;
-    document.removeEventListener('keydown', this.callback);
-    this.modal = this.callback = null;
   }
 
   onKeydown(event) {
