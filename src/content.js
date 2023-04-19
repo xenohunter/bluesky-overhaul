@@ -13,8 +13,8 @@ const run = () => {
   const rootContainer = getRootContainer();
   const modalContainer = getModalContainer(rootContainer);
 
-  const arrowKeydownPipeline = new ArrowKeydownWatcher();
-  arrowKeydownPipeline.watch(rootContainer);
+  const arrowKeydownPipeline = new ArrowKeydownWatcher(rootContainer);
+  arrowKeydownPipeline.watch();
 
   const postModalPipeline = new PostModalPipeline();
   const pauseExitModal = postModalPipeline.pauseExit.bind(postModalPipeline);

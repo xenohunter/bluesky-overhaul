@@ -1,4 +1,4 @@
-import {log} from '../utils/logger';
+import {Watcher} from './watcher';
 
 const SVG_ARROW_SELECTOR = 'svg[viewBox="0 0 256 512"][height="40"][width="40"]';
 const MODAL_IMAGE_SELECTOR = 'img[alt][draggable="false"]';
@@ -29,21 +29,14 @@ const locateArrows = () => {
   return [leftArrow, rightArrow];
 };
 
-export class ArrowKeydownWatcher {
-  constructor() {
-    this.container = null;
+export class ArrowKeydownWatcher extends Watcher {
+  constructor(targetContainer) {
+    super();
+    this.container = targetContainer;
   }
 
-  watch(rootContainer) {
-    if (this.container !== null) {
-      log('ArrowKeydownWatcher is already running');
-      return;
-    }
-
-    this.container = rootContainer;
-    this.callback = this.onKeydown.bind(this);
-
-    document.addEventListener('keydown', this.callback);
+  watch() {
+    document.addEventListener('keydown', this.onKeydown.bind(this));
   }
 
   onKeydown(event) {
@@ -57,7 +50,7 @@ export class ArrowKeydownWatcher {
       rightArrow.click();
     } else if (event.key === 'Escape') {
       const photoModal = this.container.lastChild?.firstChild;
-      const photoModalImage = photoModal?.firstChild.querySelector(MODAL_IMAGE_SELECTOR);
+      const photoModalImage = photoModal?.firstChild?.querySelector(MODAL_IMAGE_SELECTOR);
       if (photoModalImage && photoModalImage.parentElement.getAttribute('data-testid') !== 'userAvatarImage') {
         photoModal.click();
       }

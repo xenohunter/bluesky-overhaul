@@ -4,6 +4,7 @@ import {Cursor} from '../utils/cursor';
 import {getButtonRow, getContentEditable, getPhotoButton, LAST_TAB_INDEX} from '../utils/elementsFinder';
 import {log} from '../utils/logger';
 import {typeText} from '../utils/text';
+import {Pipeline} from './pipeline';
 
 const EMOJI_CHARACTER_LENGTH = 2;
 
@@ -20,8 +21,9 @@ const createEmojiPopup = (modal, emojiButton) => {
   return emojiPopup;
 };
 
-export class EmojiPipeline {
+export class EmojiPipeline extends Pipeline {
   constructor(pauseExitModal, resumeExitModal) {
+    super();
     this.modal = null;
     this.callback = null;
     this.expanded = false;

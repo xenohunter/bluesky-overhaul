@@ -1,8 +1,10 @@
 import {getContentEditable, getExitButton, getPostButton} from '../utils/elementsFinder';
 import {log} from '../utils/logger';
+import {Pipeline} from './pipeline';
 
-export class PostModalPipeline {
+export class PostModalPipeline extends Pipeline {
   constructor() {
+    super();
     this.modal = null;
     this.exitButton = null;
     this.callbacks = {};

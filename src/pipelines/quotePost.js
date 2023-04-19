@@ -1,13 +1,15 @@
 import {getContentEditable, getLinkButton} from '../utils/elementsFinder';
 import {log} from '../utils/logger';
 import {typeText, backspace} from '../utils/text';
+import {Pipeline} from './pipeline';
 
 const STAGING_URL_REGEX = /.*(https:\/\/staging\.bsky\.app\/profile\/.*\/post\/.*\/?)$/;
 const URL_REGEX = /.*(https:\/\/bsky\.app\/profile\/.*\/post\/.*\/?)$/;
 const EVENT_OPTIONS = {capture: true};
 
-export class QuotePostPipeline {
+export class QuotePostPipeline extends Pipeline {
   constructor() {
+    super();
     this.modal = null;
   }
 
