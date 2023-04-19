@@ -36,7 +36,7 @@ export class ArrowKeydownWatcher {
 
   watch(rootContainer) {
     if (this.container !== null) {
-      log('ArrowKeydownPipeline already deployed');
+      log('ArrowKeydownWatcher is already running');
       return;
     }
 
