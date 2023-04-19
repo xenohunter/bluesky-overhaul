@@ -1,6 +1,6 @@
 # Bluesky Overhaul
 
-This is a small extension for [Chrome](https://chrome.google.com/webstore/detail/bluesky-overhaul/cllpkmbebfmadmkkpplnaaffnhjjpgbi) (and partially Firefox) that adds some nice and handy features to [Bluesky](https://bsky.app/), the greatest media platform of all time.
+This is a small extension for [Chrome](https://chrome.google.com/webstore/detail/bluesky-overhaul/cllpkmbebfmadmkkpplnaaffnhjjpgbi) (and partially [Firefox](https://addons.mozilla.org/addon/bluesky-overhaul/)) that adds some nice and handy features to [Bluesky](https://bsky.app/), the greatest media platform of all time.
 
 Right now (as of April 11, 2023), the app is invite-only and the web app is running at https://staging.bsky.app/ (you may find yours truly at [@blisstweeting.ingroup.social](https://staging.bsky.app/profile/blisstweeting.ingroup.social)).
 
@@ -11,6 +11,8 @@ You may also want to support my other [project that is currently in development]
 This is what's ready, and you also may request new features in issues.
 
 #### Emoji picker
+
+_Doesn't work on Firefox yet._
 
 ![emoji-picker.png](docs/emoji-picker.png)
 
