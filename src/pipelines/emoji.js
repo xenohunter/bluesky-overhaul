@@ -8,6 +8,13 @@ import {Pipeline} from './pipeline';
 
 const EMOJI_CHARACTER_LENGTH = 2;
 
+const createEmojiButton = (rightmostButton) => {
+  const emojiButton = rightmostButton.cloneNode(false);
+  emojiButton.innerHTML = '😀';
+  emojiButton.setAttribute('tabIndex', `${LAST_TAB_INDEX + 1}`);
+  return emojiButton;
+}
+
 const createEmojiPopup = (modal, emojiButton) => {
   const emojiPopup = document.createElement('div');
   emojiPopup.style.position = 'absolute';
@@ -25,7 +32,8 @@ export class EmojiPipeline extends Pipeline {
   constructor(pauseExitModal, resumeExitModal) {
     super();
     this.modal = null;
-    this.callback = null;
+    this.buttonCallback = null;
+    this.outerCallback = null;
     this.expanded = false;
     this.pauseExitModal = pauseExitModal;
     this.resumeExitModal = resumeExitModal;
@@ -40,30 +48,36 @@ export class EmojiPipeline extends Pipeline {
 
     this.modal = modal;
     this.picker = this.createPicker();
-    this.cursor = null;
 
     this.buttonRow = getButtonRow(this.modal);
     this.photoButton = getPhotoButton(this.buttonRow);
-    this.emojiButton = this.photoButton.cloneNode(false);
 
-    this.emojiButton.innerHTML = '😀';
-    this.emojiButton.setAttribute('tabIndex', `${LAST_TAB_INDEX + 1}`);
-
+    this.emojiButton = createEmojiButton(this.photoButton);
     this.photoButton.insertAdjacentElement('afterend', this.emojiButton);
 
     this.emojiPopup = createEmojiPopup(this.modal, this.emojiButton);
     this.emojiPopup.appendChild(this.picker);
     this.modal.appendChild(this.emojiPopup);
 
-    this.callback = this.onClick.bind(this);
-    this.emojiButton.addEventListener('click', this.callback);
+    this.buttonCallback = this.onButtonClick.bind(this);
+    this.emojiButton.addEventListener('click', this.buttonCallback);
+
+    setTimeout(() => {
+      this.contentEditable = getContentEditable(this.modal);
+      this.cursor = new Cursor(this.contentEditable);
+      this.outerCallback = () => this.cursor.save();
+      this.contentEditable.addEventListener('keyup', this.outerCallback);
+      this.contentEditable.addEventListener('mouseup', this.outerCallback);
+    }, 0);
   }
 
   terminate() {
     if (this.modal === null) return;
 
-    try {this.emojiButton.removeEventListener('click', this.callback);} catch (e) {}
-    this.callback = null;
+    try {this.emojiButton.removeEventListener('click', this.buttonCallback);} catch (e) {}
+    try {this.contentEditable.removeEventListener('keyup', this.outerCallback);} catch (e) {}
+    try {this.contentEditable.removeEventListener('mouseup', this.outerCallback);} catch (e) {}
+    this.buttonCallback = this.outerCallback = null;
 
     try {this.emojiPopup.removeChild(this.picker);} catch (e) {}
     try {this.modal.removeChild(this.emojiPopup);} catch (e) {}
@@ -84,12 +98,8 @@ export class EmojiPipeline extends Pipeline {
     });
   }
 
-  onClick() {
+  onButtonClick() {
     if (this.expanded) return;
-
-    const contentEditable = getContentEditable(this.modal);
-    this.cursor = new Cursor(contentEditable);
-    this.cursor.save();
 
     this.emojiPopup.style.display = 'block';
     this.expanded = true;

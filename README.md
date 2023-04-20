@@ -15,7 +15,7 @@ Right now (as of April 19, 2023), the app is invite-only and the web app is runn
 
 ## Features
 
-Implemented features are listed here. For the planned ones, see [Issues](https://github.com/xenohunter/bluesky-overhaul/issues) or [this Bluesky thread](https://staging.bsky.app/profile/blisstweeting.ingroup.social/post/3jszn6rreec2i) (login required). You can also [create an issue](https://github.com/xenohunter/bluesky-overhaul/issues/new) if you have a feature request.
+Implemented features are listed here. For the planned ones, see [Issues](https://github.com/xenohunter/bluesky-overhaul/issues). Also, some new ideas may appear in [this Bluesky thread](https://staging.bsky.app/profile/blisstweeting.ingroup.social/post/3jszn6rreec2i) (login required). You can also [create an issue](https://github.com/xenohunter/bluesky-overhaul/issues/new) if you have a feature request.
 
 ### Emoji picker
 
