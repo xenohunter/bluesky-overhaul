@@ -11,8 +11,8 @@ export class Cursor {
   }
 
   restore() {
-    setCurrentCursorPosition(this.position, this.contentEditable);
     this.contentEditable.focus();
+    setCurrentCursorPosition(this.position, this.contentEditable);
   }
 
   move(step) {
