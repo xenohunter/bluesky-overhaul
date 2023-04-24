@@ -1,17 +1,14 @@
-const DEFAULT_TIMEOUT = 2000;
+const DEFAULT_SEARCH_TIMEOUT = 2000;
 
 export const LAST_TAB_INDEX = 0;
 
-// TODO! : use selectors for everything
 export const FIRST_CHILD = Symbol('FIRST_CHILD');
 export const LAST_CHILD = Symbol('LAST_CHILD');
 
 export class Selector {
-  // TODO! : allElements -> onlyFirst
-  constructor(selector, {allElements = true, exhaustAfter = DEFAULT_TIMEOUT} = {}) {
-    // TODO! : check the default value for being immutable
+  constructor(selector, {firstOnly = false, exhaustAfter = DEFAULT_SEARCH_TIMEOUT} = {}) {
     this.selector = selector;
-    this.allElements = allElements;
+    this.firstOnly = firstOnly;
     this.exhaustAfter = exhaustAfter;
   }
 
@@ -19,10 +16,10 @@ export class Selector {
     let result;
     if (this.selector === FIRST_CHILD || this.selector === LAST_CHILD) {
       result = elements.map((elem) => this.selector === FIRST_CHILD ? elem.firstChild : elem.lastChild);
-    } else if (this.allElements) {
-      result = elements.map((elem) => Array.from(elem.querySelectorAll(this.selector))).flat();
-    } else {
+    } else if (this.firstOnly) {
       result = elements.map((elem) => elem.querySelector(this.selector));
+    } else {
+      result = elements.map((elem) => Array.from(elem.querySelectorAll(this.selector))).flat();
     }
 
     result = result.filter((elem) => elem !== null);
@@ -51,14 +48,12 @@ const findInElements = (selector, elements) => {
   return new Promise((resolve, reject) => {
     const firstAttemptResult = selector.retrieveFrom(elements);
     if (firstAttemptResult) {
-      console.log('Resolved on the first attempt')
       resolve(firstAttemptResult);
     } else {
       const observer = new MutationObserver(() => {
         const foundElements = selector.retrieveFrom(elements);
         if (foundElements) {
           observer.disconnect();
-          console.log('Resolved on a mutation');
           resolve(foundElements);
         }
       });
@@ -69,7 +64,6 @@ const findInElements = (selector, elements) => {
 
       setTimeout(() => {
         observer.disconnect();
-        console.log(`Exhausted after ${selector.exhaustAfter}ms`);
         reject();
       }, selector.exhaustAfter);
     }

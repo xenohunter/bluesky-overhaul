@@ -45,6 +45,12 @@ That's pretty much self-explanatory.
 
 You can navigate through photos with `←` and `→` keys and close the modal window with `Esc`.
 
+### YouTube embeds in feed, profile, and post pages
+
+YouTube player now appears beside YouTube links on some pages (not in search results yet).
+
+![img.png](docs/youtube-player.png)
+
 ## Development
 
 ### Local build

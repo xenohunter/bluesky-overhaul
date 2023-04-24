@@ -1,15 +1,21 @@
 import {Watcher} from './watcher';
-import {Selector, SelectorGroup, ultimatelyFindAll} from "../utils/elementsFinder";
+import {CallThrottler} from '../utils/callThrottler';
+import {Selector, SelectorGroup, ultimatelyFindAll} from '../utils/elementsFinder';
+import {noop} from '../utils/misc';
 
 const YOUTU_BE_REGEX = /youtu\.be\/([a-zA-Z0-9_-]+)/;
 const YOUTUBE_WATCH_REGEX = /youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
 
 const INJECTED_MARKER = 'bluesky-overhaul-youtube-injected';
 
-const POST_THREAD_ITEMS = new Selector('[data-testid^="postThreadItem"]', {exhaustAfter: 5000});
-const POST_THREAD_ITEM_LINKS = new SelectorGroup([
-  new Selector('a[href*="youtu.be/"]'),
-  new Selector('a[href*="youtube.com/watch"]')
+const POST_ITEMS = new SelectorGroup([
+  new Selector('[data-testid^="postThreadItem"]', {exhaustAfter: 5000}),
+  new Selector('[data-testid^="feedItem"]', {exhaustAfter: 5000})
+]);
+
+const POST_ITEM_LINKS = new SelectorGroup([
+  new Selector(`a[href*="youtu.be/"]:not([${INJECTED_MARKER}])`),
+  new Selector(`a[href*="youtube.com/watch"]:not([${INJECTED_MARKER}])`)
 ]);
 
 const resolveYoutubeId = (url) => {
@@ -24,7 +30,8 @@ const resolveYoutubeId = (url) => {
 
 const injectYoutubePlayers = (youtubeLinks) => {
   youtubeLinks.forEach(link => {
-    if (link.getAttribute(INJECTED_MARKER)) return; // TODO! : use it in the earliest selector application
+    if (link.getAttribute(INJECTED_MARKER)) return;
+
     const videoId = resolveYoutubeId(link.href);
     if (!videoId) return;
 
@@ -40,31 +47,33 @@ const injectYoutubePlayers = (youtubeLinks) => {
 
     link.parentNode.parentNode.appendChild(iframe);
     link.setAttribute(INJECTED_MARKER, 'true');
+
+    if (iframe.parentNode.nextSibling && iframe.parentNode.nextSibling.getAttribute('tabindex') === '0') {
+      iframe.parentNode.nextSibling.style.display = 'none';
+    }
   });
 };
 
 const createYoutubePlayers = (container) => {
-  ultimatelyFindAll([POST_THREAD_ITEMS, POST_THREAD_ITEM_LINKS], container).then(injectYoutubePlayers);
+  ultimatelyFindAll([POST_ITEMS, POST_ITEM_LINKS], container)
+    .then(injectYoutubePlayers)
+    .catch(noop);
 };
 
 export class YoutubeWatcher extends Watcher {
   constructor(container) {
     super();
     this.container = container;
+    this.throttler = new CallThrottler(1000);
     this.observer = null;
   }
 
   watch() {
-    this.observer = new MutationObserver(mutations => {
-      mutations.forEach(mutation => {
-        if (mutation.target === this.container) {
-          console.log('Feed mutation detected');
-          createYoutubePlayers(this.container);
-        }
-      });
+    this.observer = new MutationObserver(() => {
+      this.throttler.call(() => createYoutubePlayers(this.container.lastChild));
     });
 
-    createYoutubePlayers(this.container);
+    this.throttler.call(() => createYoutubePlayers(this.container.lastChild));
     this.observer.observe(this.container, {childList: true, subtree: true});
   }
 }
