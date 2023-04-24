@@ -1,9 +1,10 @@
 import '@webcomponents/custom-elements';
 import {ArrowKeydownWatcher} from './watchers/arrowKeydown';
+import {YoutubeWatcher} from './watchers/youtube';
 import {PostModalPipeline} from './pipelines/postModal';
 import {EmojiPipeline} from './pipelines/emoji';
 import {QuotePostPipeline} from './pipelines/quotePost';
-import {getRootContainer, getModalContainer, getComposePostModal} from './utils/elementsFinder';
+import {getRootContainer, getFeedContainer, getModalContainer, getComposePostModal} from './utils/elementsFinder';
 import {log} from './utils/logger';
 import {PipelineManager} from './utils/pipelineManager';
 
@@ -11,10 +12,14 @@ const REPO_LINK = 'https://github.com/xenohunter/bluesky-overhaul';
 
 const run = () => {
   const rootContainer = getRootContainer();
+  const feedContainer = getFeedContainer(rootContainer);
   const modalContainer = getModalContainer(rootContainer);
 
-  const arrowKeydownPipeline = new ArrowKeydownWatcher(rootContainer);
-  arrowKeydownPipeline.watch();
+  const arrowKeydownWatcher = new ArrowKeydownWatcher(rootContainer);
+  arrowKeydownWatcher.watch();
+
+  const youtubeWatcher = new YoutubeWatcher(feedContainer);
+  youtubeWatcher.watch();
 
   const postModalPipeline = new PostModalPipeline();
   const pauseExitModal = postModalPipeline.pauseExit.bind(postModalPipeline);

@@ -25,12 +25,25 @@ const checkForTodo = () => {
 };
 
 module.exports = (env) => {
+  const mode = env['MODE'];
+  if (!mode) {
+    throw new Error('Please specify the build mode via the MODE environment variable');
+  } else if (['development', 'production'].indexOf(mode) === -1) {
+    throw new Error(`Unknown build mode: ${mode}`);
+  }
+
   const browser = env['BROWSER'];
   if (!browser) {
     throw new Error('Please specify the target browser via the BROWSER environment variable');
+  } else if (['chrome', 'firefox'].indexOf(browser) === -1) {
+    throw new Error(`Unknown target browser: ${browser}`);
   }
 
-  checkForTodo();
+  console.log(`Building for ${browser} in ${mode} mode...`);
+
+  if (mode === 'production') {
+    checkForTodo();
+  }
 
   const targetDir = `${DIST_ROOT}/${browser}`;
   const zipFilename = `bluesky-overhaul-${version}-${browser}.zip`;
@@ -38,8 +51,8 @@ module.exports = (env) => {
 
   return {
     entry: './src/content.js',
-    mode: 'development',
-    devtool: 'source-map',
+    mode: mode,
+    ...(mode === 'development' ? {devtool: 'source-map'} : {}),
     output: {
       path: targetDir,
       filename: 'bundle.js'
@@ -73,10 +86,12 @@ module.exports = (env) => {
         ]
       }),
 
-      new ZipPlugin({
-        path: DIST_ROOT,
-        filename: zipFilename
-      })
+      ...(mode === 'production' ? [
+        new ZipPlugin({
+          path: DIST_ROOT,
+          filename: zipFilename
+        })
+      ] : [])
     ]
   };
 };

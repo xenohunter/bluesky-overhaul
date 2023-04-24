@@ -1,6 +1,6 @@
 {
   "name": "bluesky-overhaul",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "license": "MIT",
   "dependencies": {
     "@emoji-mart/data": "^1.1.2",
@@ -16,8 +16,11 @@
     "zip-webpack-plugin": "^4.0.1"
   },
   "scripts": {
+    "build:dev": "webpack --env MODE=development --env BROWSER=chrome",
+    "build:chrome": "webpack --env MODE=production --env BROWSER=chrome",
+    "build:firefox": "webpack --env MODE=production --env BROWSER=firefox",
+    "build": "npm run build:chrome && npm run build:firefox",
     "lint": "npx eslint ./src",
-    "build": "npx webpack --env BROWSER=chrome && npx webpack --env BROWSER=firefox",
     "pack": "npm run lint && npm run build"
   }
 }

@@ -1,8 +1,93 @@
+const DEFAULT_SEARCH_TIMEOUT = 2000;
+
 export const LAST_TAB_INDEX = 0;
+
+export const FIRST_CHILD = Symbol('FIRST_CHILD');
+export const LAST_CHILD = Symbol('LAST_CHILD');
+
+export class Selector {
+  constructor(selector, {firstOnly = false, exhaustAfter = DEFAULT_SEARCH_TIMEOUT} = {}) {
+    this.selector = selector;
+    this.firstOnly = firstOnly;
+    this.exhaustAfter = exhaustAfter;
+  }
+
+  retrieveFrom(elements) {
+    let result;
+    if (this.selector === FIRST_CHILD || this.selector === LAST_CHILD) {
+      result = elements.map((elem) => this.selector === FIRST_CHILD ? elem.firstChild : elem.lastChild);
+    } else if (this.firstOnly) {
+      result = elements.map((elem) => elem.querySelector(this.selector));
+    } else {
+      result = elements.map((elem) => Array.from(elem.querySelectorAll(this.selector))).flat();
+    }
+
+    result = result.filter((elem) => elem !== null);
+    return result.length > 0 ? result : null;
+  }
+}
+
+export class SelectorGroup {
+  constructor(selectors) {
+    if (selectors.some((selector) => selector.exhaustAfter !== selectors[0].exhaustAfter)) {
+      throw new Error('All selectors in a group must have the same exhaustAfter value');
+    }
+
+    this.selectors = selectors;
+    this.exhaustAfter = selectors[0].exhaustAfter;
+  }
+
+  retrieveFrom(elements) {
+    let result = this.selectors.map((selector) => selector.retrieveFrom(elements));
+    result = result.filter((elem) => elem !== null);
+    return result.length > 0 ? result.flat() : null;
+  }
+}
+
+const findInElements = (selector, elements) => {
+  return new Promise((resolve, reject) => {
+    const firstAttemptResult = selector.retrieveFrom(elements);
+    if (firstAttemptResult) {
+      resolve(firstAttemptResult);
+    } else {
+      const observer = new MutationObserver(() => {
+        const foundElements = selector.retrieveFrom(elements);
+        if (foundElements) {
+          observer.disconnect();
+          resolve(foundElements);
+        }
+      });
+
+      for (const element of elements) {
+        observer.observe(element, {childList: true, subtree: true});
+      }
+
+      setTimeout(() => {
+        observer.disconnect();
+        reject();
+      }, selector.exhaustAfter);
+    }
+  });
+};
+
+export const ultimatelyFindAll = (selectors, rootElement) => {
+  if (selectors instanceof Selector || selectors instanceof SelectorGroup) selectors = [selectors];
+  rootElement = rootElement || document;
+
+  return selectors.reduce(async (previousPromise, selector) => {
+    const foundElements = await previousPromise;
+    return findInElements(selector, foundElements);
+  }, Promise.resolve([rootElement]));
+};
+
+export const ultimatelyFind = (selectors, rootElement) => {
+  return ultimatelyFindAll(selectors, rootElement).then((foundElements) => foundElements?.[0] ?? null);
+};
 
 const ROOT_CONTAINER_SELECTOR = '#root > div > div';
 
 export const getRootContainer = () => document.querySelector(ROOT_CONTAINER_SELECTOR);
+export const getFeedContainer = (rootContainer) => rootContainer.firstChild.firstChild.firstChild;
 export const getModalContainer = (rootContainer) => rootContainer.lastChild;
 
 const COMPOSE_POST_SELECTOR = '[data-testid="composePostView"]';
