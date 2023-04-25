@@ -37,6 +37,7 @@ export class QuotePostPipeline extends Pipeline {
   }
 
   onPaste(event) {
+    if (event.clipboardData.types.indexOf('text/plain') === -1) return;
     event.preventDefault();
 
     let data = event.clipboardData.getData('text/plain');
