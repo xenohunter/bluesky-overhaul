@@ -61,7 +61,7 @@ export class EmojiPipeline extends Pipeline {
     }
 
     this.#modal = modal;
-    this.#picker = this.createPicker();
+    this.#picker = this.#createPicker();
 
     Promise.all([
       ultimatelyFind(modal, [COMPOSE_BUTTON_ROW, COMPOSE_PHOTO_BUTTON]),
@@ -77,7 +77,7 @@ export class EmojiPipeline extends Pipeline {
       this.#elems.emojiPopup.appendChild(this.#picker as unknown as HTMLElement);
       modal.appendChild(this.#elems.emojiPopup);
 
-      this.#eventKeeper.add(this.#elems.emojiButton, 'click', this.onButtonClick.bind(this));
+      this.#eventKeeper.add(this.#elems.emojiButton, 'click', this.#onButtonClick.bind(this));
 
       this.#cursor = new Cursor(this.#elems.contentEditable);
       const outerCallback = () => this.#cursor?.save();
@@ -92,12 +92,12 @@ export class EmojiPipeline extends Pipeline {
       return;
     }
 
-    this.removeElements();
+    this.#removeElements();
     this.#eventKeeper.cancelAll();
     this.#modal = this.#picker = this.#cursor = null;
   }
 
-  createPicker() {
+  #createPicker() {
     return new Picker({
       emojiData,
       emojiSize: 22,
@@ -105,16 +105,25 @@ export class EmojiPipeline extends Pipeline {
         this.#cursor?.restore();
         typeText(emoji.native);
         this.#cursor?.move(EMOJI_CHARACTER_LENGTH);
+        this.#focusOnPickerSearch();
       }
     });
   }
 
-  onButtonClick() {
+  #focusOnPickerSearch() {
+    if (!this.#picker) return;
+    const picker = this.#picker as unknown as HTMLElement;
+    const input = picker.shadowRoot?.querySelector('input[type="search"]') as HTMLInputElement;
+    input.focus();
+  }
+
+  #onButtonClick() {
     if (this.#expanded) return;
 
     this.#elems.emojiPopup.style.display = 'block';
     this.#expanded = true;
     this.#pauseExitModal();
+    this.#focusOnPickerSearch();
 
     const clickOutside = (event: Event) => {
       const target = event.target as HTMLElement;
@@ -124,6 +133,7 @@ export class EmojiPipeline extends Pipeline {
         this.#modal?.removeEventListener('click', clickOutside);
         document.removeEventListener('click', clickOutside);
         this.#resumeExitModal();
+        this.#elems.contentEditable.focus();
       }
     };
 
@@ -131,7 +141,7 @@ export class EmojiPipeline extends Pipeline {
     document.addEventListener('click', clickOutside);
   }
 
-  removeElements() {
+  #removeElements() {
     for (const element of Object.values(this.#elems)) {
       try {
         if (element.parentElement) {
