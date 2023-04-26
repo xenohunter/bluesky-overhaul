@@ -1,22 +1,25 @@
+import {Pipeline} from '../pipelines/pipeline';
 import {log} from './logger';
 
 export class PipelineManager {
-  constructor(pipelines) {
+  pipelines: { [key: string]: Pipeline[] };
+
+  constructor(pipelines: { [key: string]: Pipeline[] }) {
     this.pipelines = pipelines;
   }
 
-  deploy(type, target = {}) {
-    this.pipelines[type].forEach(pipeline => {
+  deploy(type: string, target: HTMLElement) {
+    this.pipelines[type].forEach((pipeline) => {
       try {
-        pipeline.deploy(target, type);
+        pipeline.deploy(target);
       } catch (e) {
         log(`Pipeline ${pipeline.constructor.name} was deployed with errors`, e);
       }
     });
   }
 
-  terminate(type) {
-    this.pipelines[type].forEach(pipeline => {
+  terminate(type: string) {
+    this.pipelines[type].forEach((pipeline) => {
       try {
         pipeline.terminate();
       } catch (e) {
@@ -29,7 +32,7 @@ export class PipelineManager {
     Object.keys(this.pipelines).forEach((t) => this.terminate(t));
   }
 
-  terminateExcept(type) {
-    Object.keys(this.pipelines).filter(t => t !== type).forEach((t) => this.terminate(t));
+  terminateExcept(type: string) {
+    Object.keys(this.pipelines).filter((t) => t !== type).forEach((t) => this.terminate(t));
   }
 }

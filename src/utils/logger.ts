@@ -1,3 +1,3 @@
-export const log = (message, ...args) => {
+export const log = (message: string, ...args: any) => {
   console.debug(`Bluesky Overhaul: ${message}`, ...args);
 };
