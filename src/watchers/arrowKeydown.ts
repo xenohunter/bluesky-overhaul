@@ -3,7 +3,7 @@ import {Watcher} from './watcher';
 const SVG_ARROW_SELECTOR = 'svg[viewBox="0 0 256 512"][height="40"][width="40"]';
 const MODAL_IMAGE_SELECTOR = 'img[alt][draggable="false"]';
 
-const getElementPositionX = (elem) => {
+const getElementPositionX = (elem: HTMLElement) => {
   const rect = elem.getBoundingClientRect();
   return rect.left + rect.width / 2;
 };
@@ -17,7 +17,7 @@ const locateArrows = () => {
   let rightArrow = null;
 
   if (sideArrows.length === 1) {
-    if (getElementPositionX(sideArrows[0]) < windowCenter) {
+    if (getElementPositionX(sideArrows[0] as HTMLElement) < windowCenter) {
       leftArrow = sideArrows[0];
     } else {
       rightArrow = sideArrows[0];
@@ -30,16 +30,18 @@ const locateArrows = () => {
 };
 
 export class ArrowKeydownWatcher extends Watcher {
-  constructor(targetContainer) {
+  #container: HTMLElement;
+
+  constructor(targetContainer: HTMLElement) {
     super();
-    this.container = targetContainer;
+    this.#container = targetContainer;
   }
 
   watch() {
     document.addEventListener('keydown', this.onKeydown.bind(this));
   }
 
-  onKeydown(event) {
+  onKeydown(event: KeyboardEvent) {
     if (['ArrowLeft', 'ArrowRight', 'Escape'].indexOf(event.key) === -1) return;
 
     const [leftArrow, rightArrow] = locateArrows();
@@ -49,9 +51,10 @@ export class ArrowKeydownWatcher extends Watcher {
     } else if (event.key === 'ArrowRight' && rightArrow !== null) {
       rightArrow.click();
     } else if (event.key === 'Escape') {
-      const photoModal = this.container.lastChild?.firstChild;
-      const photoModalImage = photoModal?.firstChild?.querySelector(MODAL_IMAGE_SELECTOR);
-      if (photoModalImage && photoModalImage.parentElement.getAttribute('data-testid') !== 'userAvatarImage') {
+      const photoModal = this.#container.lastChild?.firstChild as HTMLElement;
+      const photoModalChild = photoModal?.firstChild as HTMLElement;
+      const photoModalImage = photoModalChild?.querySelector(MODAL_IMAGE_SELECTOR);
+      if (photoModalImage && photoModalImage?.parentElement?.getAttribute('data-testid') !== 'userAvatarImage') {
         photoModal.click();
       }
     }

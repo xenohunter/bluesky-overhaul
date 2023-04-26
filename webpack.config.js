@@ -50,9 +50,27 @@ module.exports = (env) => {
   const manifestVersion = (browser === 'chrome') ? 3 : 2;
 
   return {
-    entry: './src/content.js',
     mode: mode,
-    ...(mode === 'development' ? {devtool: 'source-map'} : {}),
+    ...(mode === 'development' ? {
+      devtool: 'source-map',
+      optimization: {
+        minimize: false
+      }
+    } : {}),
+
+    entry: './src/content.ts',
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          use: 'ts-loader',
+          exclude: /node_modules/
+        }
+      ]
+    },
+    resolve: {
+      extensions: ['.tsx', '.ts', '.js']
+    },
     output: {
       path: targetDir,
       filename: 'bundle.js'
