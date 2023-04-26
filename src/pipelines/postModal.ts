@@ -36,14 +36,11 @@ export class PostModalPipeline extends Pipeline {
       this.#exitButton = exitButton;
       this.#contentEditable = contentEditable;
 
-      const clickCallback = this.onClick.bind(this);
-      const keydownCallback = this.onKeydown.bind(this);
-      const stopCallback = () => this.#eventKeeper.cancelAll();
-
-      this.#eventKeeper.add(document, 'click', clickCallback);
-      this.#eventKeeper.add(document, 'keydown', keydownCallback);
-      this.#eventKeeper.add(exitButton, 'click', stopCallback);
-      this.#eventKeeper.add(contentEditable, 'keydown', keydownCallback);
+      this.#eventKeeper.add(document, 'click', this.#onClick.bind(this));
+      this.#eventKeeper.add(document, 'keydown', this.#onKeydown.bind(this));
+      this.#eventKeeper.add(contentEditable, 'keydown', this.#onKeydown.bind(this));
+      this.#eventKeeper.add(contentEditable, 'mousedown', this.#onPresumedSelect.bind(this));
+      this.#eventKeeper.add(exitButton, 'click', () => this.#eventKeeper.cancelAll());
     });
   }
 
@@ -66,7 +63,7 @@ export class PostModalPipeline extends Pipeline {
     this.#paused = false;
   }
 
-  onClick(event: Event) {
+  #onClick(event: Event) {
     if (this.#paused) return;
 
     if (!this.#modal?.contains(event.target as Node) && event.target !== this.#exitButton) {
@@ -75,7 +72,7 @@ export class PostModalPipeline extends Pipeline {
     }
   }
 
-  onKeydown(event: KeyboardEvent) {
+  #onKeydown(event: KeyboardEvent) {
     if (this.#paused) return;
 
     if (event.key === 'Escape') {
@@ -87,5 +84,12 @@ export class PostModalPipeline extends Pipeline {
         postButton.click();
       });
     }
+  }
+
+  #onPresumedSelect() {
+    if (this.#paused) return;
+
+    this.pause();
+    document.addEventListener('mouseup', () => setTimeout(this.resume.bind(this), 0), {once: true});
   }
 }
