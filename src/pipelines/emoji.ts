@@ -37,10 +37,10 @@ export class EmojiPipeline extends Pipeline {
   readonly #eventKeeper: EventKeeper;
   #elems: { [key: string]: HTMLElement };
   #expanded: boolean;
-  readonly #pauseExitModal: () => void;
-  readonly #resumeExitModal: () => void;
+  readonly #pauseOuterServices: () => void;
+  readonly #resumeOuterServices: () => void;
 
-  constructor(pauseExitModal: () => void, resumeExitModal: () => void) {
+  constructor(pauseCallback: () => void, resumeCallback: () => void) {
     super();
     this.#modal = null;
     this.#picker = null;
@@ -50,8 +50,8 @@ export class EmojiPipeline extends Pipeline {
     this.#elems = {};
 
     this.#expanded = false;
-    this.#pauseExitModal = pauseExitModal;
-    this.#resumeExitModal = resumeExitModal;
+    this.#pauseOuterServices = pauseCallback;
+    this.#resumeOuterServices = resumeCallback;
   }
 
   deploy(modal: HTMLElement): void {
@@ -122,7 +122,7 @@ export class EmojiPipeline extends Pipeline {
 
     this.#elems.emojiPopup.style.display = 'block';
     this.#expanded = true;
-    this.#pauseExitModal();
+    this.#pauseOuterServices();
     this.#focusOnPickerSearch();
 
     const clickOutside = (event: Event) => {
@@ -132,7 +132,7 @@ export class EmojiPipeline extends Pipeline {
         this.#expanded = false;
         this.#modal?.removeEventListener('click', clickOutside);
         document.removeEventListener('click', clickOutside);
-        this.#resumeExitModal();
+        this.#resumeOuterServices();
         this.#elems.contentEditable.focus();
       }
     };

@@ -9,6 +9,7 @@ module.exports = {
   },
   rules: {
     "arrow-parens": "error",
+    "indent": ["error", 2],
     "no-empty-function": "off",
     "@typescript-eslint/no-empty-function": "error",
     "@typescript-eslint/no-explicit-any": "off",

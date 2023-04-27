@@ -4,6 +4,8 @@
   "license": "MIT",
   "dependencies": {
     "@emoji-mart/data": "^1.1.2",
+    "@types/chrome": "^0.0.233",
+    "@types/firefox": "^0.0.31",
     "@webcomponents/custom-elements": "^1.6.0",
     "emoji-mart": "^5.5.2"
   },

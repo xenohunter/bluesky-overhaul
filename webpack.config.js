@@ -6,10 +6,10 @@ const ZipPlugin = require('zip-webpack-plugin');
 const {version} = require('./package.json');
 
 const SOURCE_ROOT = __dirname + '/src';
+const PAGES_ROOT = __dirname + '/pages';
 const DIST_ROOT = __dirname + '/dist';
 
-const checkForTodo = () => {
-  const pattern = `${SOURCE_ROOT}/**/*.js`;
+const checkForTodo = (pattern) => {
   const files = glob.sync(pattern);
 
   for (const file of files) {
@@ -21,7 +21,7 @@ const checkForTodo = () => {
     }
   }
 
-  console.log('No TODO! strings found');
+  console.log(`No TODO! found for pattern ${pattern}`);
 };
 
 module.exports = (env) => {
@@ -42,7 +42,8 @@ module.exports = (env) => {
   console.log(`Building for ${browser} in ${mode} mode...`);
 
   if (mode === 'production') {
-    checkForTodo();
+    checkForTodo(`${SOURCE_ROOT}/**/*`);
+    checkForTodo(`${PAGES_ROOT}/**/*`);
   }
 
   const targetDir = `${DIST_ROOT}/${browser}`;
@@ -100,6 +101,10 @@ module.exports = (env) => {
           {
             from: 'icons/*',
             to: 'icons/[name][ext]'
+          },
+          {
+            from: 'pages/*',
+            to: 'pages/[name][ext]'
           }
         ]
       }),

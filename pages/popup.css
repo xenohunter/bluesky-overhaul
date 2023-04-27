@@ -1,0 +1,8 @@
+body {
+    display: block;
+    width: 200px;
+    height: auto;
+    margin: 0;
+    padding: 15px;
+    border: 1px solid #ccc;
+}

@@ -1,3 +1,4 @@
+import {IPausable} from '../interfaces';
 import {log} from '../utils/logger';
 import {Pipeline} from './pipeline';
 import {EventKeeper} from '../utils/eventKeeper';
@@ -5,20 +6,24 @@ import {COMPOSE_CANCEL_BUTTON, COMPOSE_POST_BUTTON, COMPOSE_CONTENT_EDITABLE} fr
 import {ultimatelyFind} from '../dom/utils';
 
 
-export class PostModalPipeline extends Pipeline {
+export class PostModalPipeline extends Pipeline implements IPausable {
   #modal: HTMLElement | null;
   #exitButton: HTMLElement | null;
   #contentEditable: HTMLElement | null;
   readonly #eventKeeper: EventKeeper;
   #paused: boolean;
+  readonly #pauseOuterServices: () => void;
+  readonly #resumeOuterServices: () => void;
 
-  constructor() {
+  constructor(pauseCallback: () => void, resumeCallback: () => void) {
     super();
     this.#modal = null;
     this.#exitButton = null;
     this.#contentEditable = null;
     this.#eventKeeper = new EventKeeper();
     this.#paused = false;
+    this.#pauseOuterServices = pauseCallback;
+    this.#resumeOuterServices = resumeCallback;
   }
 
   deploy(modal: HTMLElement) {
@@ -27,6 +32,7 @@ export class PostModalPipeline extends Pipeline {
       return;
     }
 
+    this.#pauseOuterServices();
     this.#modal = modal;
 
     Promise.all([
@@ -53,6 +59,7 @@ export class PostModalPipeline extends Pipeline {
     this.resume();
     this.#eventKeeper.cancelAll();
     this.#modal = this.#exitButton = this.#contentEditable = null;
+    this.#resumeOuterServices();
   }
 
   pause() {

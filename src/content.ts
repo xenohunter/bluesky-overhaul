@@ -1,7 +1,8 @@
 import '@webcomponents/custom-elements';
+import {createSettingsManager} from './browser/settingsManager';
 import {ultimatelyFind} from './dom/utils';
 import {ROOT_CONTAINER, FEED_CONTAINER, MODAL_CONTAINER, COMPOSE_MODAL} from './dom/selectors';
-import {ArrowKeydownWatcher} from './watchers/arrowKeydown';
+import {KeydownWatcher} from './watchers/keydown';
 import {YoutubeWatcher} from './watchers/youtube';
 import {PostModalPipeline} from './pipelines/postModal';
 import {EmojiPipeline} from './pipelines/emoji';
@@ -13,21 +14,20 @@ const REPO_LINK = 'https://github.com/xenohunter/bluesky-overhaul';
 
 const run = () => {
   return ultimatelyFind(document.body, ROOT_CONTAINER).then((rootContainer) => Promise.all([
+    createSettingsManager(),
     Promise.resolve(rootContainer),
     ultimatelyFind(rootContainer, FEED_CONTAINER),
     ultimatelyFind(rootContainer, MODAL_CONTAINER)
-  ]).then(([rootContainer, feedContainer, modalContainer]) => {
-    const arrowKeydownWatcher = new ArrowKeydownWatcher(rootContainer);
-    arrowKeydownWatcher.watch();
+  ]).then(([settingsManager, rootContainer, feedContainer, modalContainer]) => {
+    const keydownWatcher = new KeydownWatcher(rootContainer);
+    settingsManager.subscribe(keydownWatcher);
+    keydownWatcher.watch();
 
     const youtubeWatcher = new YoutubeWatcher(feedContainer);
     youtubeWatcher.watch();
 
-    const postModalPipeline = new PostModalPipeline();
-    const pauseExitModal = postModalPipeline.pause.bind(postModalPipeline);
-    const resumeExitModal = postModalPipeline.resume.bind(postModalPipeline);
-
-    const emojiPipeline = new EmojiPipeline(pauseExitModal, resumeExitModal);
+    const postModalPipeline = new PostModalPipeline(() => keydownWatcher.pause(), () => keydownWatcher.resume());
+    const emojiPipeline = new EmojiPipeline(() => postModalPipeline.pause(), () => postModalPipeline.resume());
     const quotePostPipeline = new QuotePostPipeline();
 
     const pipelineManager = new PipelineManager({

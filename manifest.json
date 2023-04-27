@@ -10,9 +10,14 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": [],
+  "permissions": [
+    "storage"
+  ],
   "content_scripts": [{
     "matches": ["https://staging.bsky.app/*"],
     "js": ["bundle.js"]
-  }]
+  }],
+  "action": {
+    "default_popup": "pages/popup.html"
+  }
 }
