@@ -1,5 +1,5 @@
 import '@webcomponents/custom-elements';
-import {createSettingsManager} from './browser/settingsManager';
+import {getSettingsManager} from './browser/settingsManager';
 import {ultimatelyFind} from './dom/utils';
 import {ROOT_CONTAINER, FEED_CONTAINER, MODAL_CONTAINER, COMPOSE_MODAL} from './dom/selectors';
 import {KeydownWatcher} from './watchers/keydown';
@@ -12,9 +12,9 @@ import {PipelineManager} from './utils/pipelineManager';
 
 const REPO_LINK = 'https://github.com/xenohunter/bluesky-overhaul';
 
-const run = () => {
+const run = (): Promise<void> => {
   return ultimatelyFind(document.body, ROOT_CONTAINER).then((rootContainer) => Promise.all([
-    createSettingsManager(),
+    getSettingsManager(),
     Promise.resolve(rootContainer),
     ultimatelyFind(rootContainer, FEED_CONTAINER),
     ultimatelyFind(rootContainer, MODAL_CONTAINER)
@@ -52,19 +52,15 @@ const run = () => {
   }));
 };
 
-const launch = () => {
-  run().then(() => {
-    log('Launched');
-  }).catch(() => {
-    setTimeout(() => {
-      run().then(() => {
-        log('Launched after the second attempt (1000ms delay)');
-      }).catch((e) => {
-        console.error(`Failed to launch Bluesky Overhaul. Please, copy the error and report this issue: ${REPO_LINK}`);
-        console.error(e);
-      });
-    }, 1000);
-  });
-};
-
-launch();
+run().then(() => {
+  log('Launched');
+}).catch(() => {
+  setTimeout(() => {
+    run().then(() => {
+      log('Launched after the second attempt (1000ms delay)');
+    }).catch((e) => {
+      console.error(`Failed to launch Bluesky Overhaul. Please, copy the error and report this issue: ${REPO_LINK}`);
+      console.error(e);
+    });
+  }, 1000);
+});

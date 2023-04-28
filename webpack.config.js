@@ -10,7 +10,7 @@ const PAGES_ROOT = __dirname + '/pages';
 const DIST_ROOT = __dirname + '/dist';
 
 const checkForTodo = (pattern) => {
-  const files = glob.sync(pattern);
+  const files = glob.sync(pattern, {nodir: true});
 
   for (const file of files) {
     const contents = fs.readFileSync(file, 'utf8');

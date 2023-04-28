@@ -1,4 +1,5 @@
-import {TSetting} from './browser/settingsManager';
+import {TSetting} from './browser/api';
+import {APP_SETTINGS} from './browser/appSettings';
 
 export interface IPausable {
   pause(): void;
@@ -6,6 +7,6 @@ export interface IPausable {
 }
 
 export interface ISettingsSubscriber {
-  get SETTINGS(): string[];
-  onSettingChange(name: string, value: TSetting): void;
+  onSettingChange(name: APP_SETTINGS, value: TSetting): void;
+  get SETTINGS(): APP_SETTINGS[];
 }

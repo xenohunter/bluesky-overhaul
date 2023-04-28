@@ -9,6 +9,9 @@ module.exports = {
   },
   rules: {
     "arrow-parens": "error",
+    "comma-dangle": "off",
+    "@typescript-eslint/comma-dangle": "error",
+    "@typescript-eslint/explicit-function-return-type": "error",
     "indent": ["error", 2],
     "no-empty-function": "off",
     "@typescript-eslint/no-empty-function": "error",

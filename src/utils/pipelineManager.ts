@@ -8,7 +8,7 @@ export class PipelineManager {
     this.pipelines = pipelines;
   }
 
-  deploy(type: string, target: HTMLElement) {
+  deploy(type: string, target: HTMLElement): void {
     this.pipelines[type].forEach((pipeline) => {
       try {
         pipeline.deploy(target);
@@ -18,7 +18,7 @@ export class PipelineManager {
     });
   }
 
-  terminate(type: string) {
+  terminate(type: string): void {
     this.pipelines[type].forEach((pipeline) => {
       try {
         pipeline.terminate();
@@ -28,11 +28,11 @@ export class PipelineManager {
     });
   }
 
-  terminateAll() {
+  terminateAll(): void {
     Object.keys(this.pipelines).forEach((t) => this.terminate(t));
   }
 
-  terminateExcept(type: string) {
+  terminateExcept(type: string): void {
     Object.keys(this.pipelines).filter((t) => t !== type).forEach((t) => this.terminate(t));
   }
 }

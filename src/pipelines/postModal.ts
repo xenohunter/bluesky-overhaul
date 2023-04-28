@@ -26,7 +26,7 @@ export class PostModalPipeline extends Pipeline implements IPausable {
     this.#resumeOuterServices = resumeCallback;
   }
 
-  deploy(modal: HTMLElement) {
+  deploy(modal: HTMLElement): void {
     if (this.#modal !== null) {
       log('PostModalPipeline is already deployed');
       return;
@@ -50,7 +50,7 @@ export class PostModalPipeline extends Pipeline implements IPausable {
     });
   }
 
-  terminate() {
+  terminate(): void {
     if (this.#modal === null) {
       log('PostModalPipeline is not deployed');
       return;
@@ -62,15 +62,15 @@ export class PostModalPipeline extends Pipeline implements IPausable {
     this.#resumeOuterServices();
   }
 
-  pause() {
+  pause(): void {
     this.#paused = true;
   }
 
-  resume() {
+  resume(): void {
     this.#paused = false;
   }
 
-  #onClick(event: Event) {
+  #onClick(event: Event): void {
     if (this.#paused) return;
 
     if (!this.#modal?.contains(event.target as Node) && event.target !== this.#exitButton) {
@@ -79,7 +79,7 @@ export class PostModalPipeline extends Pipeline implements IPausable {
     }
   }
 
-  #onKeydown(event: KeyboardEvent) {
+  #onKeydown(event: KeyboardEvent): void {
     if (this.#paused) return;
 
     if (event.key === 'Escape') {
@@ -93,7 +93,7 @@ export class PostModalPipeline extends Pipeline implements IPausable {
     }
   }
 
-  #onPresumedSelect() {
+  #onPresumedSelect(): void {
     if (this.#paused) return;
 
     this.pause();

@@ -1,23 +1,23 @@
 import {IPausable, ISettingsSubscriber} from '../interfaces';
-import {TSetting} from '../browser/settingsManager';
-import {HANDLE_VIM_KEYBINDINGS} from '../browser/settings';
+import {TSetting, TSettings} from '../browser/api';
+import {APP_SETTINGS} from '../browser/appSettings';
 import {Watcher} from './watcher';
-import {VIM_KEYS, VimKeybindingsHandler} from './helpers/vimKeybindings';
+import {VimKeybindingsHandler} from './helpers/vimKeybindings';
 
-const DEFAULT_SETTINGS: { [key: string]: TSetting } = {
-  VIM_KEYBINDINGS: false
+const DEFAULT_SETTINGS: TSettings = {
+  [APP_SETTINGS.HANDLE_VIM_KEYBINDINGS]: false
 };
 
 const SVG_ARROW_SELECTOR = 'svg[viewBox="0 0 256 512"][height="40"][width="40"]';
 const MODAL_IMAGE_SELECTOR = 'img[alt][draggable="false"]';
 const PHOTO_KEYS = ['ArrowLeft', 'ArrowRight', 'Escape'];
 
-const getElementPositionX = (elem: HTMLElement) => {
+const getElementPositionX = (elem: HTMLElement): number => {
   const rect = elem.getBoundingClientRect();
   return rect.left + rect.width / 2;
 };
 
-const locateArrows = () => {
+const locateArrows = (): [HTMLElement | null, HTMLElement | null] => {
   const svgElements = document.querySelectorAll(SVG_ARROW_SELECTOR);
   const sideArrows = Array.from(svgElements).map((svg) => svg.parentElement);
   const windowCenter = window.innerWidth / 2;
@@ -49,24 +49,24 @@ export class KeydownWatcher extends Watcher implements IPausable, ISettingsSubsc
     this.#vimHandler = new VimKeybindingsHandler(targetContainer);
   }
 
-  watch() {
+  watch(): void {
     document.addEventListener('keydown', this.#onKeydown.bind(this));
   }
 
-  pause() {
+  pause(): void {
     this.#isPaused = true;
   }
 
-  resume() {
+  resume(): void {
     this.#isPaused = false;
   }
 
-  onSettingChange(name: string, value: TSetting) {
+  onSettingChange(name: APP_SETTINGS, value: TSetting): void {
     if (!this.SETTINGS.includes(name)) throw new Error(`Unknown setting name "${name}"`);
     if (typeof value !== typeof DEFAULT_SETTINGS[name]) throw new Error(`Invalid value "${value}" for "${name}"`);
 
-    if (name === HANDLE_VIM_KEYBINDINGS) {
-      if (value) {
+    if (name === APP_SETTINGS.HANDLE_VIM_KEYBINDINGS) {
+      if (value === true) {
         this.#vimHandler.enable();
       } else {
         this.#vimHandler.disable();
@@ -74,34 +74,40 @@ export class KeydownWatcher extends Watcher implements IPausable, ISettingsSubsc
     }
   }
 
-  get SETTINGS() {
-    return Object.keys(DEFAULT_SETTINGS);
+  get SETTINGS(): APP_SETTINGS[] {
+    return Object.keys(DEFAULT_SETTINGS) as APP_SETTINGS[];
   }
 
-  #closePhotoModal() {
+  #closePhotoModal(): boolean {
     const photoModal = this.#container.lastChild?.firstChild as HTMLElement;
     const photoModalChild = photoModal?.firstChild as HTMLElement;
     const photoModalImage = photoModalChild?.querySelector(MODAL_IMAGE_SELECTOR);
+
     if (photoModalImage && photoModalImage?.parentElement?.getAttribute('data-testid') !== 'userAvatarImage') {
       photoModal.click();
+      return true;
+    } else {
+      return false;
     }
   }
 
-  #onKeydown(event: KeyboardEvent) {
-    if (this.#isPaused) return;
+  #onKeydown(event: KeyboardEvent): void {
+    if (this.#isPaused || event.ctrlKey || event.metaKey) return;
 
-    console.log(event.key); // TODO!
-
-    if (event.key in PHOTO_KEYS) {
+    if (PHOTO_KEYS.includes(event.key)) {
+      console.log('photo key pressed');
       const [leftArrow, rightArrow] = locateArrows();
       if (event.key === 'ArrowLeft' && leftArrow !== null) {
         leftArrow.click();
       } else if (event.key === 'ArrowRight' && rightArrow !== null) {
         rightArrow.click();
       } else if (event.key === 'Escape') {
-        this.#closePhotoModal();
+        const wasModalClosed = this.#closePhotoModal();
+        if (!wasModalClosed) {
+          this.#vimHandler.handle(event.key);
+        }
       }
-    } else if (event.key in VIM_KEYS) {
+    } else {
       this.#vimHandler.handle(event.key);
     }
   }

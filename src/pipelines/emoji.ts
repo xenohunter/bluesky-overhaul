@@ -11,13 +11,13 @@ import {noop} from '../utils/misc';
 
 const EMOJI_CHARACTER_LENGTH = 2;
 
-const createEmojiButton = (rightmostButton: HTMLElement) => {
+const createEmojiButton = (rightmostButton: HTMLElement): HTMLElement => {
   const emojiButton = rightmostButton.cloneNode(false) as HTMLElement;
   emojiButton.innerHTML = '😀';
   return emojiButton;
 };
 
-const createEmojiPopup = (modal: HTMLElement, emojiButton: HTMLElement) => {
+const createEmojiPopup = (modal: HTMLElement, emojiButton: HTMLElement): HTMLElement => {
   const emojiPopup = document.createElement('div');
   emojiPopup.style.position = 'absolute';
   emojiPopup.style.display = 'none';
@@ -80,13 +80,13 @@ export class EmojiPipeline extends Pipeline {
       this.#eventKeeper.add(this.#elems.emojiButton, 'click', this.#onButtonClick.bind(this));
 
       this.#cursor = new Cursor(this.#elems.contentEditable);
-      const outerCallback = () => this.#cursor?.save();
+      const outerCallback = (): void => this.#cursor?.save();
       this.#eventKeeper.add(this.#elems.contentEditable, 'keyup', outerCallback);
       this.#eventKeeper.add(this.#elems.contentEditable, 'mouseup', outerCallback);
     });
   }
 
-  terminate() {
+  terminate(): void {
     if (this.#modal === null) {
       log('EmojiPipeline already terminated');
       return;
@@ -97,11 +97,11 @@ export class EmojiPipeline extends Pipeline {
     this.#modal = this.#picker = this.#cursor = null;
   }
 
-  #createPicker() {
+  #createPicker(): Picker {
     return new Picker({
       emojiData,
       emojiSize: 22,
-      onEmojiSelect: (emoji: { [key: string]: any }) => {
+      onEmojiSelect: (emoji: { [key: string]: any }): void => {
         this.#cursor?.restore();
         typeText(emoji.native);
         this.#cursor?.move(EMOJI_CHARACTER_LENGTH);
@@ -110,14 +110,14 @@ export class EmojiPipeline extends Pipeline {
     });
   }
 
-  #focusOnPickerSearch() {
+  #focusOnPickerSearch(): void {
     if (!this.#picker) return;
     const picker = this.#picker as unknown as HTMLElement;
     const input = picker.shadowRoot?.querySelector('input[type="search"]') as HTMLInputElement;
     input.focus();
   }
 
-  #onButtonClick() {
+  #onButtonClick(): void {
     if (this.#expanded) return;
 
     this.#elems.emojiPopup.style.display = 'block';
@@ -125,7 +125,7 @@ export class EmojiPipeline extends Pipeline {
     this.#pauseOuterServices();
     this.#focusOnPickerSearch();
 
-    const clickOutside = (event: Event) => {
+    const clickOutside = (event: Event): void => {
       const target = event.target as HTMLElement;
       if (this.#elems.emojiPopup && !this.#elems.emojiPopup.contains(target) && target !== this.#elems.emojiButton) {
         this.#elems.emojiPopup.style.display = 'none';
@@ -141,7 +141,7 @@ export class EmojiPipeline extends Pipeline {
     document.addEventListener('click', clickOutside);
   }
 
-  #removeElements() {
+  #removeElements(): void {
     for (const element of Object.values(this.#elems)) {
       try {
         if (element.parentElement) {

@@ -1,4 +1,7 @@
-export type TSettings = { [key: string]: boolean | number | string };
+import {APP_SETTINGS} from './appSettings';
+
+export type TSetting = boolean | number | string;
+export type TSettings = { [key in APP_SETTINGS]?: TSetting };
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -6,11 +9,16 @@ const browserAPI = chrome || browser;
 
 const SETTINGS_KEY = 'settings';
 
-export const getSettings = async () => {
-  return await browserAPI.storage.local.get(SETTINGS_KEY);
+export const clearStorage = async (): Promise<void> => {
+  await browserAPI.storage.local.clear();
 };
 
-export const subscribeToSettings = (listener: (newSettings: TSettings) => void) => {
+export const getSettings = async (): Promise<TSettings> => {
+  const storage = await browserAPI.storage.local.get();
+  return storage[SETTINGS_KEY] || {};
+};
+
+export const subscribeToSettings = (listener: (newSettings: TSettings) => void): void => {
   browserAPI.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'local' && changes[SETTINGS_KEY]) {
       listener(changes[SETTINGS_KEY].newValue);
