@@ -2,7 +2,6 @@ export enum VIM_ACTIONS {
   EXPAND_PHOTO = 'expand_photo',
   LIKE = 'like',
   LOAD_NEW_POSTS = 'load_new_posts',
-  MUTE_ACCOUNT = 'mute_account',
   CREATE_POST = 'create_post',
   NEXT_POST = 'next_post',
   OPEN_POST = 'open_post',
@@ -24,7 +23,6 @@ export const VIM_KEY_MAP = {
   'o': VIM_ACTIONS.EXPAND_PHOTO,
   'r': VIM_ACTIONS.REPLY,
   't': VIM_ACTIONS.REPOST,
-  'u': VIM_ACTIONS.MUTE_ACCOUNT,
   'ArrowDown': VIM_ACTIONS.NEXT_POST,
   'ArrowUp': VIM_ACTIONS.PREVIOUS_POST,
   'Enter': VIM_ACTIONS.OPEN_POST

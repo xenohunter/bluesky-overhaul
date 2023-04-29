@@ -10,6 +10,11 @@ import {ultimatelyFind} from '../../dom/utils';
 enum DIRECTION { NEXT, PREVIOUS }
 
 const FOCUSED_POST_CLASS = 'bluesky-overhaul-focused-post';
+const MISSING_POST_ERROR = 'No post is focused';
+
+const REPLY_BUTTON_SELECTOR = '[data-testid="replyBtn"]';
+const REPOST_BUTTON_SELECTOR = '[data-testid="repostBtn"]';
+const LIKE_BUTTON_SELECTOR = '[data-testid="likeBtn"]';
 
 export class VimKeybindingsHandler implements IPausable {
   readonly #container: HTMLElement;
@@ -67,8 +72,17 @@ export class VimKeybindingsHandler implements IPausable {
     case VIM_ACTIONS.PREVIOUS_POST:
       this.#selectPost(DIRECTION.PREVIOUS);
       break;
+    case VIM_ACTIONS.LIKE:
+      this.#likePost();
+      break;
     case VIM_ACTIONS.CREATE_POST:
       this.#newPost();
+      break;
+    case VIM_ACTIONS.REPLY:
+      this.#replyToPost();
+      break;
+    case VIM_ACTIONS.REPOST:
+      this.#repostPost();
       break;
     case VIM_ACTIONS.OPEN_POST:
       this.#currentPost?.click();
@@ -84,6 +98,24 @@ export class VimKeybindingsHandler implements IPausable {
     } else {
       this.#postList.getPreviousPost().then((p) => this.#highlightPost(p));
     }
+  }
+
+  #replyToPost(): void {
+    if (!this.#currentPost) return tip(MISSING_POST_ERROR);
+    const reply = this.#currentPost.querySelector(REPLY_BUTTON_SELECTOR) as HTMLElement;
+    reply?.click();
+  }
+
+  #repostPost(): void {
+    if (!this.#currentPost) return tip(MISSING_POST_ERROR);
+    const repost = this.#currentPost.querySelector(REPOST_BUTTON_SELECTOR) as HTMLElement;
+    repost?.click();
+  }
+
+  #likePost(): void {
+    if (!this.#currentPost) return tip(MISSING_POST_ERROR);
+    const like = this.#currentPost.querySelector(LIKE_BUTTON_SELECTOR) as HTMLElement;
+    like?.click();
   }
 
   #onPostAltClick(event: MouseEvent): void {
