@@ -33,6 +33,8 @@ export class VimKeybindingsHandler implements IPausable {
     if (this.#isPaused) return;
     this.#postList.pause();
     this.#postClickEventKeeper.cancelAll();
+    this.#removeHighlight();
+    this.#currentPost = null;
     this.#isPaused = true;
   }
 
@@ -73,13 +75,14 @@ export class VimKeybindingsHandler implements IPausable {
 
   #highlightPost(post: HTMLElement): void {
     if (post === this.#currentPost) return;
-
-    if (this.#currentPost) {
-      this.#currentPost.classList.remove(FOCUSED_POST_CLASS);
-    }
+    this.#removeHighlight();
 
     this.#currentPost = post;
     this.#currentPost.classList.add(FOCUSED_POST_CLASS);
     this.#currentPost.scrollIntoView({block: 'center', behavior: 'smooth'});
+  }
+
+  #removeHighlight(): void {
+    this.#currentPost?.classList.remove(FOCUSED_POST_CLASS);
   }
 }
