@@ -1,7 +1,7 @@
 import {Selector} from './selector';
 import {SelectorGroup} from './selectorGroup';
 
-type TSelectorLike = Selector | SelectorGroup;
+export type TSelectorLike = Selector | SelectorGroup;
 type TSelectorOrArray = TSelectorLike | TSelectorLike[];
 
 const findInElements = (selector: TSelectorLike, elements: HTMLElement[]): Promise<HTMLElement[]> => {

@@ -15,6 +15,7 @@
   ],
   "content_scripts": [{
     "matches": ["https://staging.bsky.app/*"],
+    "css": ["awesome-notifications-style.css", "bluesky-overhaul.css"],
     "js": ["bundle.js"]
   }],
   "action": {

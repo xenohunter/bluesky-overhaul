@@ -12,7 +12,6 @@ class SettingsManager {
   async initialize(): Promise<void> {
     if (this.#isInitialized) return;
     this.#currentSettings = await getSettings();
-    console.log('SettingsManager: current settings', this.#currentSettings);
     subscribeToSettings(this.#onSettingsChange.bind(this));
     this.#isInitialized = true;
   }

@@ -2,7 +2,7 @@ import type {TEventKey, TEventListener, TEventOptions} from '../types';
 import {noop} from './misc';
 
 type TElement = Element | Document | Window;
-type TEventListenerUnion = TEventListener<Event> | TEventListener<KeyboardEvent> | TEventListener<ClipboardEvent>;
+type TEventListenerUnion = TEventListener<Event> | TEventListener<KeyboardEvent> | TEventListener<ClipboardEvent> | TEventListener<MouseEvent>;
 
 type TEventRequisites = {
   element: TElement;

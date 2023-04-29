@@ -38,7 +38,6 @@ const renderForm = (allSettings, currentSettings, formId) => {
   const form = document.createElement('form');
   form.id = formId;
   Object.keys(allSettings).forEach((s) => {
-    console.log(`setting ${s} - default: ${allSettings[s]} - current: ${currentSettings[s]}`);
     form.appendChild(renderSetting(s, s in currentSettings ? currentSettings[s] : allSettings[s]));
   });
   form.appendChild(renderSubmit());

@@ -43,22 +43,26 @@ export class KeydownWatcher extends Watcher implements IPausable, ISettingsSubsc
   readonly #vimHandler: VimKeybindingsHandler;
   #isPaused = false;
 
-  constructor(targetContainer: HTMLElement) {
+  constructor(targetContainer: HTMLElement, vimContainer: HTMLElement) {
     super();
     this.#container = targetContainer;
-    this.#vimHandler = new VimKeybindingsHandler(targetContainer);
+    this.#vimHandler = new VimKeybindingsHandler(vimContainer, true);
   }
 
   watch(): void {
     document.addEventListener('keydown', this.#onKeydown.bind(this));
   }
 
-  pause(): void {
-    this.#isPaused = true;
+  start(): void {
+    if (!this.#isPaused) return;
+    this.#vimHandler.start();
+    this.#isPaused = false;
   }
 
-  resume(): void {
-    this.#isPaused = false;
+  pause(): void {
+    if (this.#isPaused) return;
+    this.#vimHandler.pause();
+    this.#isPaused = true;
   }
 
   onSettingChange(name: APP_SETTINGS, value: TSetting): void {
@@ -67,9 +71,9 @@ export class KeydownWatcher extends Watcher implements IPausable, ISettingsSubsc
 
     if (name === APP_SETTINGS.HANDLE_VIM_KEYBINDINGS) {
       if (value === true) {
-        this.#vimHandler.enable();
+        this.#vimHandler.start();
       } else {
-        this.#vimHandler.disable();
+        this.#vimHandler.pause();
       }
     }
   }
@@ -95,7 +99,6 @@ export class KeydownWatcher extends Watcher implements IPausable, ISettingsSubsc
     if (this.#isPaused || event.ctrlKey || event.metaKey) return;
 
     if (PHOTO_KEYS.includes(event.key)) {
-      console.log('photo key pressed');
       const [leftArrow, rightArrow] = locateArrows();
       if (event.key === 'ArrowLeft' && leftArrow !== null) {
         leftArrow.click();
@@ -103,12 +106,10 @@ export class KeydownWatcher extends Watcher implements IPausable, ISettingsSubsc
         rightArrow.click();
       } else if (event.key === 'Escape') {
         const wasModalClosed = this.#closePhotoModal();
-        if (!wasModalClosed) {
-          this.#vimHandler.handle(event.key);
-        }
+        !wasModalClosed && this.#vimHandler.handle(event);
       }
     } else {
-      this.#vimHandler.handle(event.key);
+      this.#vimHandler.handle(event);
     }
   }
 }

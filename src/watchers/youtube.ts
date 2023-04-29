@@ -53,13 +53,12 @@ const createYoutubePlayers = (container: HTMLElement): void => {
 
 export class YoutubeWatcher extends Watcher {
   readonly #container: HTMLElement;
-  readonly #throttler: CallThrottler;
+  readonly #throttler: CallThrottler = new CallThrottler(THROTTLING_INTERVAL);
   readonly #observer: MutationObserver;
 
   constructor(container: HTMLElement) {
     super();
     this.#container = container;
-    this.#throttler = new CallThrottler(THROTTLING_INTERVAL);
     this.#observer = new MutationObserver(() => {
       const currentLayout = this.#container.lastChild as HTMLElement;
       this.#throttler.call(() => createYoutubePlayers(currentLayout));

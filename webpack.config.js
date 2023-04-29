@@ -105,6 +105,14 @@ module.exports = (env) => {
           {
             from: 'pages/*',
             to: 'pages/[name][ext]'
+          },
+          {
+            from: 'node_modules/awesome-notifications/dist/style.css',
+            to: 'awesome-notifications-style.css'
+          },
+          {
+            from: 'styles/bluesky-overhaul.css',
+            to: 'bluesky-overhaul.css'
           }
         ]
       }),

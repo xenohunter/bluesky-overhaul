@@ -11,9 +11,9 @@ export class PostModalPipeline extends Pipeline implements IPausable {
   #exitButton: HTMLElement | null;
   #contentEditable: HTMLElement | null;
   readonly #eventKeeper: EventKeeper;
-  #paused: boolean;
   readonly #pauseOuterServices: () => void;
   readonly #resumeOuterServices: () => void;
+  #paused = false;
 
   constructor(pauseCallback: () => void, resumeCallback: () => void) {
     super();
@@ -21,7 +21,6 @@ export class PostModalPipeline extends Pipeline implements IPausable {
     this.#exitButton = null;
     this.#contentEditable = null;
     this.#eventKeeper = new EventKeeper();
-    this.#paused = false;
     this.#pauseOuterServices = pauseCallback;
     this.#resumeOuterServices = resumeCallback;
   }
@@ -56,18 +55,18 @@ export class PostModalPipeline extends Pipeline implements IPausable {
       return;
     }
 
-    this.resume();
+    this.start();
     this.#eventKeeper.cancelAll();
     this.#modal = this.#exitButton = this.#contentEditable = null;
     this.#resumeOuterServices();
   }
 
-  pause(): void {
-    this.#paused = true;
+  start(): void {
+    this.#paused = false;
   }
 
-  resume(): void {
-    this.#paused = false;
+  pause(): void {
+    this.#paused = true;
   }
 
   #onClick(event: Event): void {
@@ -97,6 +96,6 @@ export class PostModalPipeline extends Pipeline implements IPausable {
     if (this.#paused) return;
 
     this.pause();
-    document.addEventListener('mouseup', () => setTimeout(this.resume.bind(this), 0), {once: true});
+    document.addEventListener('mouseup', () => setTimeout(this.start.bind(this), 0), {once: true});
   }
 }

@@ -19,15 +19,15 @@ const run = (): Promise<void> => {
     ultimatelyFind(rootContainer, FEED_CONTAINER),
     ultimatelyFind(rootContainer, MODAL_CONTAINER)
   ]).then(([settingsManager, rootContainer, feedContainer, modalContainer]) => {
-    const keydownWatcher = new KeydownWatcher(rootContainer);
+    const keydownWatcher = new KeydownWatcher(rootContainer, feedContainer);
     settingsManager.subscribe(keydownWatcher);
     keydownWatcher.watch();
 
     const youtubeWatcher = new YoutubeWatcher(feedContainer);
     youtubeWatcher.watch();
 
-    const postModalPipeline = new PostModalPipeline(() => keydownWatcher.pause(), () => keydownWatcher.resume());
-    const emojiPipeline = new EmojiPipeline(() => postModalPipeline.pause(), () => postModalPipeline.resume());
+    const postModalPipeline = new PostModalPipeline(() => keydownWatcher.pause(), () => keydownWatcher.start());
+    const emojiPipeline = new EmojiPipeline(() => postModalPipeline.pause(), () => postModalPipeline.start());
     const quotePostPipeline = new QuotePostPipeline();
 
     const pipelineManager = new PipelineManager({
