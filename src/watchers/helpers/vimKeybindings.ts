@@ -78,6 +78,9 @@ export class VimKeybindingsHandler implements IPausable {
     case VIM_ACTIONS.CREATE_POST:
       this.#newPost();
       break;
+    case VIM_ACTIONS.EXPAND_IMAGE:
+      this.#expandImage();
+      break;
     case VIM_ACTIONS.REPLY:
       this.#replyToPost();
       break;
@@ -116,6 +119,12 @@ export class VimKeybindingsHandler implements IPausable {
     if (!this.#currentPost) return tip(MISSING_POST_ERROR);
     const like = this.#currentPost.querySelector(LIKE_BUTTON_SELECTOR) as HTMLElement;
     like?.click();
+  }
+
+  #expandImage(): void {
+    if (!this.#currentPost) return tip(MISSING_POST_ERROR);
+    const imageContainer = this.#currentPost.querySelector('div.expo-image-container') as HTMLElement;
+    imageContainer?.click();
   }
 
   #onPostAltClick(event: MouseEvent): void {
