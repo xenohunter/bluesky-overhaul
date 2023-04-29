@@ -1,5 +1,5 @@
 import {IPausable} from '../../interfaces';
-import {SEARCH_BAR} from '../../dom/selectors';
+import {ROOT_CONTAINER, SEARCH_BAR} from '../../dom/selectors';
 import {EventKeeper} from '../../utils/eventKeeper';
 import {noop} from '../../utils/misc';
 import {modal, tip} from '../../utils/notifications';
@@ -56,14 +56,20 @@ export class VimKeybindingsHandler implements IPausable {
     case VIM_ACTIONS.SEARCH:
       this.#focusSearchBar();
       break;
+    case VIM_ACTIONS.LOAD_NEW_POSTS:
+      this.#loadNewPosts();
+      break;
     case VIM_ACTIONS.NEXT_POST:
       this.#selectPost(DIRECTION.NEXT);
       break;
-    case VIM_ACTIONS.OPEN_POST:
-      this.#currentPost?.click();
-      break;
     case VIM_ACTIONS.PREVIOUS_POST:
       this.#selectPost(DIRECTION.PREVIOUS);
+      break;
+    case VIM_ACTIONS.CREATE_POST:
+      this.#newPost();
+      break;
+    case VIM_ACTIONS.OPEN_POST:
+      this.#currentPost?.click();
       break;
     default:
       tip(`Action "${action}" is not implemented yet`);
@@ -110,7 +116,7 @@ export class VimKeybindingsHandler implements IPausable {
       this.#searchBarEventKeeper.add(searchBar, 'keydown', (event: KeyboardEvent) => {
         if (event.key === 'Escape') this.#blurSearchBar();
       });
-    });
+    }).catch(() => tip('Search bar not found'));
   }
 
   #blurSearchBar(): void {
@@ -123,5 +129,35 @@ export class VimKeybindingsHandler implements IPausable {
 
   #findSearchBar(): Promise<HTMLElement> {
     return ultimatelyFind(document.body, SEARCH_BAR);
+  }
+
+  async #loadNewPosts(): Promise<void> {
+    try {
+      const tab = await this.#postList.getCurrentFeedTab();
+      const tabContainer = await ultimatelyFind(this.#container, tab);
+      const newPostsButton = tabContainer.childNodes[1] as HTMLElement;
+
+      if (newPostsButton && newPostsButton.nextSibling) {
+        newPostsButton.click();
+        this.#container.scrollIntoView({block: 'start', behavior: 'smooth'});
+      } else {
+        tip('No new posts to load');
+      }
+    } catch {
+      tip('You are not on the feed page');
+    }
+  }
+
+  async #newPost(): Promise<void> {
+    const rootContainer = await ultimatelyFind(document.body, ROOT_CONTAINER);
+    const children = rootContainer.childNodes;
+    const menuItems = children[1].childNodes;
+    const newPostButton = menuItems[menuItems.length - 1] as HTMLElement;
+
+    if (newPostButton) {
+      newPostButton.click();
+    } else {
+      tip('No new post button found');
+    }
   }
 }

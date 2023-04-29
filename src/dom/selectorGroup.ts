@@ -19,4 +19,8 @@ export class SelectorGroup {
     const result = this.#selectors.map((selector) => selector.retrieveFrom(elements));
     return result.flat();
   }
+
+  clone(): SelectorGroup {
+    return new SelectorGroup(this.#selectors.map((selector) => selector.clone()));
+  }
 }

@@ -62,6 +62,16 @@ export class PostList implements IPausable {
     this.#isPaused = true;
   }
 
+  getCurrentFeedTab(): Promise<Selector> {
+    return this.#isMainPage().then((isMainPage) => {
+      if (isMainPage) {
+        return this.#activeTabSelector.clone();
+      } else {
+        return Promise.reject('Not on main page');
+      }
+    });
+  }
+
   setCurrentPost(element: HTMLElement): Promise<HTMLElement> {
     return this.#resolveList().then((posts) => {
       for (const post of posts) {

@@ -29,4 +29,8 @@ export class Selector {
 
     return result.filter((elem) => elem !== null && elem !== undefined) as HTMLElement[];
   }
+
+  clone(): Selector {
+    return new Selector(this.selector, {firstOnly: this.#firstOnly, exhaustAfter: this.exhaustAfter});
+  }
 }
