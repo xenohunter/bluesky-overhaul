@@ -30,6 +30,7 @@ export class VimKeybindingsHandler implements IPausable {
     if (!this.#isPaused) return;
     this.#postList.start();
     this.#postClickEventKeeper.add(this.#container, 'click', this.#onPostAltClick.bind(this));
+    this.#blurSearchBar();
     this.#isPaused = false;
   }
 
@@ -37,6 +38,7 @@ export class VimKeybindingsHandler implements IPausable {
     if (this.#isPaused) return;
     this.#postList.pause();
     this.#postClickEventKeeper.cancelAll();
+    this.#searchBarEventKeeper.cancelAll();
     this.#removeHighlight();
     this.#isPaused = true;
   }
@@ -111,10 +113,11 @@ export class VimKeybindingsHandler implements IPausable {
   #focusSearchBar(): void {
     this.#removeHighlight();
     this.#findSearchBar().then((searchBar) => {
+      this.#searchBarEventKeeper.cancelAll();
       searchBar.focus();
       this.#searchBarEventKeeper.add(searchBar, 'blur', this.#blurSearchBar.bind(this));
       this.#searchBarEventKeeper.add(searchBar, 'keydown', (event: KeyboardEvent) => {
-        if (event.key === 'Escape') this.#blurSearchBar();
+        if (event.key === 'Escape') searchBar.blur();
       });
     }).catch(() => tip('Search bar not found'));
   }
@@ -124,6 +127,7 @@ export class VimKeybindingsHandler implements IPausable {
     this.#findSearchBar().then((searchBar) => {
       searchBar.blur();
       this.#stashedPost && this.#highlightPost(this.#stashedPost);
+      this.#searchBarEventKeeper.add(searchBar, 'focus', this.#focusSearchBar.bind(this));
     });
   }
 
