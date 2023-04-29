@@ -7,6 +7,10 @@ const notifier = new AWN({
   }
 });
 
+export const modal = (message: string): void => {
+  notifier.modal(message);
+};
+
 export const tip = (message: string): void => {
   notifier.tip(message);
 };

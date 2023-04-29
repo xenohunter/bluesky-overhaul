@@ -4,7 +4,7 @@ import {LAST_CHILD, POST_ITEMS} from '../../dom/selectors';
 import {Selector} from '../../dom/selector';
 import {EventKeeper} from '../../utils/eventKeeper';
 
-const LAG = 50;
+const LAG = 100;
 
 const FOLLOWING_DATA = 'homeScreenFeedTabs-Following';
 const WHATSHOT_DATA = 'homeScreenFeedTabs-What\'s hot';

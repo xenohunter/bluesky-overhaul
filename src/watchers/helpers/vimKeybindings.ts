@@ -1,9 +1,11 @@
 import {IPausable} from '../../interfaces';
-import {VIM_ACTIONS, VIM_KEY_MAP} from './vimActions';
+import {SEARCH_BAR} from '../../dom/selectors';
 import {EventKeeper} from '../../utils/eventKeeper';
 import {noop} from '../../utils/misc';
-import {tip} from '../../utils/notifications';
+import {modal, tip} from '../../utils/notifications';
 import {PostList} from './postList';
+import {generateHelpMessage, VIM_ACTIONS, VIM_KEY_MAP} from './vimActions';
+import {ultimatelyFind} from '../../dom/utils';
 
 enum DIRECTION { NEXT, PREVIOUS }
 
@@ -13,7 +15,9 @@ export class VimKeybindingsHandler implements IPausable {
   readonly #container: HTMLElement;
   readonly #postList: PostList;
   readonly #postClickEventKeeper = new EventKeeper();
+  readonly #searchBarEventKeeper = new EventKeeper();
   #currentPost: HTMLElement | null = null;
+  #stashedPost: HTMLElement | null = null;
   #isPaused: boolean;
 
   constructor(targetContainer: HTMLElement, startPaused = true) {
@@ -34,7 +38,6 @@ export class VimKeybindingsHandler implements IPausable {
     this.#postList.pause();
     this.#postClickEventKeeper.cancelAll();
     this.#removeHighlight();
-    this.#currentPost = null;
     this.#isPaused = true;
   }
 
@@ -47,8 +50,17 @@ export class VimKeybindingsHandler implements IPausable {
 
     const action = VIM_KEY_MAP[key as keyof typeof VIM_KEY_MAP];
     switch (action) {
+    case VIM_ACTIONS.SHOW_HELP:
+      modal(generateHelpMessage());
+      break;
+    case VIM_ACTIONS.SEARCH:
+      this.#focusSearchBar();
+      break;
     case VIM_ACTIONS.NEXT_POST:
       this.#selectPost(DIRECTION.NEXT);
+      break;
+    case VIM_ACTIONS.OPEN_POST:
+      this.#currentPost?.click();
       break;
     case VIM_ACTIONS.PREVIOUS_POST:
       this.#selectPost(DIRECTION.PREVIOUS);
@@ -77,12 +89,39 @@ export class VimKeybindingsHandler implements IPausable {
     if (post === this.#currentPost) return;
     this.#removeHighlight();
 
+    this.#stashedPost = null;
     this.#currentPost = post;
     this.#currentPost.classList.add(FOCUSED_POST_CLASS);
     this.#currentPost.scrollIntoView({block: 'center', behavior: 'smooth'});
+    this.#currentPost.focus({preventScroll: true});
   }
 
   #removeHighlight(): void {
+    this.#stashedPost = this.#currentPost;
     this.#currentPost?.classList.remove(FOCUSED_POST_CLASS);
+    this.#currentPost = null;
+  }
+
+  #focusSearchBar(): void {
+    this.#removeHighlight();
+    this.#findSearchBar().then((searchBar) => {
+      searchBar.focus();
+      this.#searchBarEventKeeper.add(searchBar, 'blur', this.#blurSearchBar.bind(this));
+      this.#searchBarEventKeeper.add(searchBar, 'keydown', (event: KeyboardEvent) => {
+        if (event.key === 'Escape') this.#blurSearchBar();
+      });
+    });
+  }
+
+  #blurSearchBar(): void {
+    this.#searchBarEventKeeper.cancelAll();
+    this.#findSearchBar().then((searchBar) => {
+      searchBar.blur();
+      this.#stashedPost && this.#highlightPost(this.#stashedPost);
+    });
+  }
+
+  #findSearchBar(): Promise<HTMLElement> {
+    return ultimatelyFind(document.body, SEARCH_BAR);
   }
 }

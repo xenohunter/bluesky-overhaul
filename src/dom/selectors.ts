@@ -21,6 +21,8 @@ export const COMPOSE_POST_BUTTON = new Selector('[data-testid="composerPublishBt
 export const COMPOSE_BUTTON_ROW = new Selector('div[tabindex] > div:nth-child(3)');
 export const COMPOSE_PHOTO_BUTTON = new Selector('div[tabIndex="0"]');
 
+export const SEARCH_BAR = new Selector('[data-testid="searchTextInput"]'); // relative to FEED_CONTAINER
+
 export const POST_ITEM_LINK_INJECTED_MARKER = 'bluesky-overhaul-youtube-injected'; // TODO : move to constants.ts
 
 export const POST_ITEMS = new SelectorGroup([

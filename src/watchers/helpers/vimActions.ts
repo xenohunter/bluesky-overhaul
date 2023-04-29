@@ -29,3 +29,28 @@ export const VIM_KEY_MAP = {
   'ArrowUp': VIM_ACTIONS.PREVIOUS_POST,
   'Enter': VIM_ACTIONS.OPEN_POST
 };
+
+const toNormalText = (name: string): string => {
+  name = name.replace(/_/g, ' ');
+  return name.charAt(0).toUpperCase() + name.slice(1);
+};
+
+export const generateHelpMessage = (): string => {
+  const actions: { [key: string]: string[] } = {};
+  for (const [key, action] of Object.entries(VIM_KEY_MAP)) {
+    if (!(action in actions)) actions[action] = [];
+    actions[action].push(`<span class="mono">${key}</span>`);
+  }
+
+  const helpMessage = [];
+  for (const [action, buttons] of Object.entries(actions)) {
+    helpMessage.push(`<b>${toNormalText(action)}</b>: ${buttons.join('&nbsp;')}`);
+  }
+
+  return `
+    <div class="bluesky-overhaul-help">
+      <h3>Bluesky Overhaul Vim Keybindings</h3>
+      <p>${helpMessage.join('<br/>')}</p>
+    </div>
+  `;
+};
