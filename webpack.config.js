@@ -9,6 +9,9 @@ const SOURCE_ROOT = __dirname + '/src';
 const PAGES_ROOT = __dirname + '/pages';
 const DIST_ROOT = __dirname + '/dist';
 
+const CHROME_MANIFEST_VERSION = 3;
+const FIREFOX_MANIFEST_VERSION = 2;
+
 const checkForTodo = (pattern) => {
   const files = glob.sync(pattern, {nodir: true});
 
@@ -48,7 +51,7 @@ module.exports = (env) => {
 
   const targetDir = `${DIST_ROOT}/${browser}`;
   const zipFilename = `bluesky-overhaul-${version}-${browser}.zip`;
-  const manifestVersion = (browser === 'chrome') ? 3 : 2;
+  const manifestVersion = (browser === 'chrome') ? CHROME_MANIFEST_VERSION : FIREFOX_MANIFEST_VERSION;
 
   return {
     mode: mode,
@@ -95,6 +98,9 @@ module.exports = (env) => {
             transform(content) {
               content = content.toString().replace(/"__MANIFEST_VERSION__"/g, manifestVersion.toString());
               content = content.toString().replace(/"__PACKAGE_VERSION__"/g, `"${version}"`);
+              if (manifestVersion === FIREFOX_MANIFEST_VERSION) {
+                content = content.toString().replace(/"action"/g, '"browser_action"');
+              }
               return content;
             }
           },
@@ -104,15 +110,28 @@ module.exports = (env) => {
           },
           {
             from: 'pages/*',
-            to: 'pages/[name][ext]'
+            to: 'pages/[name][ext]',
+            transform(content, path) {
+              if (path.endsWith('.html')) {
+                content = content.toString().replace(/__BLUESKY_OVERHAUL_VERSION__/g, version);
+              }
+              return content;
+            }
+          },
+          {
+            from: 'node_modules/bootstrap/dist/css/bootstrap.css',
+            to: 'pages/bootstrap.css'
           },
           {
             from: 'node_modules/awesome-notifications/dist/style.css',
-            to: 'awesome-notifications-style.css'
+            to: 'awesome-notifications-style.css',
           },
           {
-            from: 'styles/bluesky-overhaul.css',
-            to: 'bluesky-overhaul.css'
+            from: 'styles/*.css',
+            to: 'bluesky-overhaul.css',
+            transformAll(assets) {
+              return assets.reduce((accumulator, asset) => `${accumulator}${asset.data}\n`, "");
+            }
           }
         ]
       }),

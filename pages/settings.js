@@ -1,17 +1,31 @@
-const browserAPI = chrome || browser;
+const browserAPI = window.browser || chrome;
 
 const CONTAINER_ID = 'main';
 const FORM_ID = 'settings';
-const CLEAR_ID = 'clear';
 
-// TODO : this should be imported from the main part of the code
+// TODO : this should be imported from the main part of the code (APP_SETTINGS from ./src/browser/appSettings.js)
 const DEFAULT_SETTINGS = {
-  'vim-keybindings': false
+  'vim-keybindings': false,
+  'hide-followers-count': false,
+  'hide-following-count': false,
+  'hide-posts-count': false
+};
+
+const EXPERIMENTAL_SETTINGS = ['vim-keybindings'];
+
+const TIPS = {
+  'vim-keybindings': 'Press "?" while on Bluesky to see the list of keys',
 };
 
 // TODO : make a small React app for this later
 const renderSetting = (name, currentValue) => {
-  const div = document.createElement('div');
+  const outerDiv = document.createElement('div');
+  outerDiv.classList.add('form-group');
+  const innerDiv = document.createElement('div');
+  innerDiv.classList.add('col-sm-offset-2', 'col-sm-10');
+  const checkboxDiv = document.createElement('div');
+  checkboxDiv.classList.add('checkbox');
+
   const label = document.createElement('label');
   const input = document.createElement('input');
   input.type = 'checkbox';
@@ -21,26 +35,37 @@ const renderSetting = (name, currentValue) => {
   label.appendChild(input);
   const title = name.split('-').map((word) => word[0].toUpperCase() + word.slice(1)).join(' ');
   label.appendChild(document.createTextNode(title));
-  div.appendChild(label);
-  return div;
-};
 
-const renderSubmit = () => {
-  const div = document.createElement('div');
-  const button = document.createElement('button');
-  button.type = 'submit';
-  button.appendChild(document.createTextNode('Save'));
-  div.appendChild(button);
-  return div;
+  if (EXPERIMENTAL_SETTINGS.includes(name)) {
+    const span = document.createElement('span');
+    span.classList.add('label', 'label-warning');
+    span.appendChild(document.createTextNode('experimental'));
+    label.appendChild(document.createTextNode(' '));
+    label.appendChild(span);
+  }
+
+  if (name in TIPS) {
+    const tip = document.createElement('div');
+    tip.classList.add('tip');
+    const small = document.createElement('small');
+    small.appendChild(document.createTextNode(TIPS[name]));
+    tip.appendChild(small);
+    label.appendChild(tip);
+  }
+
+  checkboxDiv.appendChild(label);
+  innerDiv.appendChild(checkboxDiv);
+  outerDiv.appendChild(innerDiv);
+  return outerDiv;
 };
 
 const renderForm = (allSettings, currentSettings, formId) => {
   const form = document.createElement('form');
+  form.classList.add('form-horizontal');
   form.id = formId;
   Object.keys(allSettings).forEach((s) => {
     form.appendChild(renderSetting(s, s in currentSettings ? currentSettings[s] : allSettings[s]));
   });
-  form.appendChild(renderSubmit());
   return form;
 };
 
@@ -53,12 +78,7 @@ const initializeForm = () => {
   });
 };
 
-const log = (msg) => {
-  const logDiv = document.getElementById('lastUpdate');
-  logDiv.innerHTML = msg + '<br/>' + logDiv.innerHTML;
-};
-
-const handleFormSubmit = (form, ev) => {
+const handleFormChange = (form, ev) => {
   ev.preventDefault();
   const newSettings = {};
   for (const [name, value] of Object.entries(DEFAULT_SETTINGS)) {
@@ -72,20 +92,11 @@ const handleFormSubmit = (form, ev) => {
 
   browserAPI.storage.local.set({
     'settings': newSettings
-  }).then(() => {
-    log('Settings saved');
-  });
-};
-
-const handleClearClick = (ev) => {
-  ev.preventDefault();
-  browserAPI.storage.local.clear().then(() => {
-    log('Settings cleared');
   });
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
   const form = await initializeForm();
-  form.addEventListener('submit', handleFormSubmit.bind(null, form));
-  document.getElementById(CLEAR_ID).addEventListener('click', handleClearClick);
+  form.addEventListener('change', handleFormChange.bind(null, form));
+  form.addEventListener('submit', (event) => event.preventDefault());
 });

@@ -1,6 +1,7 @@
 import {ISettingsSubscriber} from '../interfaces';
 import {getSettings, subscribeToSettings, TSetting, TSettings} from './api';
 import {APP_SETTINGS} from './appSettings';
+import {success} from '../utils/notifications';
 
 export type TListener = (settingName: APP_SETTINGS, value: TSetting) => void;
 
@@ -41,6 +42,8 @@ class SettingsManager {
         listeners.forEach((listener) => listener(settingName, value));
       }
     }
+
+    success('Settings updated');
   }
 }
 

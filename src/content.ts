@@ -2,6 +2,7 @@ import '@webcomponents/custom-elements';
 import {getSettingsManager} from './browser/settingsManager';
 import {ultimatelyFind} from './dom/utils';
 import {ROOT_CONTAINER, FEED_CONTAINER, MODAL_CONTAINER, COMPOSE_MODAL} from './dom/selectors';
+import {CountersConcealer} from './watchers/countersConcealer';
 import {KeydownWatcher} from './watchers/keydown';
 import {YoutubeWatcher} from './watchers/youtube';
 import {PostModalPipeline} from './pipelines/postModal';
@@ -19,6 +20,10 @@ const run = (): Promise<void> => {
     ultimatelyFind(rootContainer, FEED_CONTAINER),
     ultimatelyFind(rootContainer, MODAL_CONTAINER)
   ]).then(([settingsManager, rootContainer, feedContainer, modalContainer]) => {
+    const countersConcealer = new CountersConcealer(document.body);
+    settingsManager.subscribe(countersConcealer);
+    countersConcealer.watch();
+
     const keydownWatcher = new KeydownWatcher(rootContainer, feedContainer);
     settingsManager.subscribe(keydownWatcher);
     keydownWatcher.watch();

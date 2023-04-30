@@ -6,6 +6,7 @@ export class SelectorGroup {
 
   constructor(selectors: Selector[]) {
     // TODO : add .merge() method to SelectorGroup (probably a static one)
+    // TODO : add .extend() method to SelectorGroup (probably a static one)
 
     if (selectors.some((selector) => selector.exhaustAfter !== selectors[0].exhaustAfter)) {
       throw new Error('All selectors in a group must have the same exhaustAfter value');

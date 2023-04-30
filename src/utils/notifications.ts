@@ -11,6 +11,10 @@ export const modal = (message: string): void => {
   notifier.modal(message);
 };
 
+export const success = (message: string): void => {
+  notifier.success(message);
+};
+
 export const tip = (message: string): void => {
   notifier.tip(message);
 };

@@ -5,7 +5,7 @@ export type TSettings = { [key in APP_SETTINGS]?: TSetting };
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-const browserAPI = chrome || browser;
+const browserAPI = window.browser || chrome;
 
 const SETTINGS_KEY = 'settings';
 
@@ -19,7 +19,7 @@ export const getSettings = async (): Promise<TSettings> => {
 };
 
 export const subscribeToSettings = (listener: (newSettings: TSettings) => void): void => {
-  browserAPI.storage.onChanged.addListener((changes, namespace) => {
+  browserAPI.storage.onChanged.addListener((changes: any, namespace: any) => {
     if (namespace === 'local' && changes[SETTINGS_KEY]) {
       listener(changes[SETTINGS_KEY].newValue);
     }
