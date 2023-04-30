@@ -112,9 +112,18 @@ export class EmojiPipeline extends Pipeline {
 
   #focusOnPickerSearch(): void {
     if (!this.#picker) return;
+    this.#getPickerSearch()?.focus();
+  }
+
+  #clearPickerSearch(): void {
+    if (!this.#picker) return;
+    const pickerSearch = this.#getPickerSearch();
+    if (pickerSearch) pickerSearch.value = '';
+  }
+
+  #getPickerSearch(): HTMLInputElement | null {
     const picker = this.#picker as unknown as HTMLElement;
-    const input = picker.shadowRoot?.querySelector('input[type="search"]') as HTMLInputElement;
-    input.focus();
+    return picker.shadowRoot?.querySelector('input[type="search"]') as HTMLInputElement;
   }
 
   #onButtonClick(): void {
@@ -129,6 +138,7 @@ export class EmojiPipeline extends Pipeline {
       const target = event.target as HTMLElement;
       if (this.#elems.emojiPopup && !this.#elems.emojiPopup.contains(target) && target !== this.#elems.emojiButton) {
         this.#elems.emojiPopup.style.display = 'none';
+        this.#clearPickerSearch();
         this.#expanded = false;
         this.#modal?.removeEventListener('click', clickOutside);
         document.removeEventListener('click', clickOutside);
