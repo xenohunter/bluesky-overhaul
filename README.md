@@ -51,6 +51,18 @@ YouTube player now appears beside YouTube links on some pages (not in search res
 
 ![img.png](docs/youtube-player.png)
 
+### Vim keybindings
+
+You can now use `j` and `k` to traverse posts, `l` to like, and `?` to look up the list of all keybindings. (There are 11 or more different actions configured, depending on the extension version.)
+
+### Hide followers, following, and posts counts from profiles
+
+Pretty self-explanatory!
+
+### Settings popup
+
+You can now change some settings in the extension popup window.
+
 ## Development
 
 ### Local build

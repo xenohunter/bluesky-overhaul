@@ -20,7 +20,7 @@ export class QuotePostPipeline extends Pipeline {
     this.#eventKeeper = new EventKeeper();
   }
 
-  deploy(modal: HTMLElement) {
+  deploy(modal: HTMLElement): void {
     if (this.#modal !== null) {
       log('QuotePostPipeline is already deployed');
       return;
@@ -34,7 +34,7 @@ export class QuotePostPipeline extends Pipeline {
     });
   }
 
-  terminate() {
+  terminate(): void {
     if (this.#modal === null) {
       log('QuotePostPipeline is not deployed');
       return;
@@ -44,7 +44,7 @@ export class QuotePostPipeline extends Pipeline {
     this.#modal = this.#contentEditable = null;
   }
 
-  onPaste(event: ClipboardEvent) {
+  onPaste(event: ClipboardEvent): void {
     if (!event.clipboardData || !this.#contentEditable) return;
     if (event.clipboardData.types.indexOf('text/plain') === -1) return;
 

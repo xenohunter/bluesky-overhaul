@@ -8,7 +8,7 @@ const THROTTLING_INTERVAL = 500;
 const YOUTU_BE_REGEX = /youtu\.be\/([a-zA-Z0-9_-]+)/;
 const YOUTUBE_WATCH_REGEX = /youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
 
-const resolveYoutubeId = (url: string) => {
+const resolveYoutubeId = (url: string): string | null => {
   let match;
   if (url.includes('youtu.be')) {
     match = url.match(YOUTU_BE_REGEX);
@@ -18,7 +18,7 @@ const resolveYoutubeId = (url: string) => {
   return match?.[1] ?? null;
 };
 
-const injectYoutubePlayers = (youtubeLinks: HTMLLinkElement[]) => {
+const injectYoutubePlayers = (youtubeLinks: HTMLLinkElement[]): void => {
   youtubeLinks.forEach((link) => {
     if (link.getAttribute(POST_ITEM_LINK_INJECTED_MARKER)) return;
 
@@ -45,7 +45,7 @@ const injectYoutubePlayers = (youtubeLinks: HTMLLinkElement[]) => {
   });
 };
 
-const createYoutubePlayers = (container: HTMLElement) => {
+const createYoutubePlayers = (container: HTMLElement): void => {
   ultimatelyFindAll(container, [POST_ITEMS, POST_ITEM_LINKS])
     .then((links) => injectYoutubePlayers(links as HTMLLinkElement[]))
     .catch(noop);
@@ -53,20 +53,19 @@ const createYoutubePlayers = (container: HTMLElement) => {
 
 export class YoutubeWatcher extends Watcher {
   readonly #container: HTMLElement;
-  readonly #throttler: CallThrottler;
+  readonly #throttler: CallThrottler = new CallThrottler(THROTTLING_INTERVAL);
   readonly #observer: MutationObserver;
 
   constructor(container: HTMLElement) {
     super();
     this.#container = container;
-    this.#throttler = new CallThrottler(THROTTLING_INTERVAL);
     this.#observer = new MutationObserver(() => {
       const currentLayout = this.#container.lastChild as HTMLElement;
       this.#throttler.call(() => createYoutubePlayers(currentLayout));
     });
   }
 
-  watch() {
+  watch(): void {
     const initialLayout = this.#container.lastChild as HTMLElement;
     this.#throttler.call(() => createYoutubePlayers(initialLayout));
     this.#observer.observe(this.#container, {childList: true, subtree: true});

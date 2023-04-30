@@ -1,8 +1,10 @@
-import {FIRST_CHILD, LAST_CHILD} from './constants';
+import {FIRST_CHILD_MARKER, LAST_CHILD_MARKER} from './constants';
 
 const DEFAULT_SEARCH_TIMEOUT = 2000;
 
 export class Selector {
+  // TODO : add .matches(element: HTMLElement) method
+
   readonly selector: string;
   readonly #firstOnly: boolean;
   readonly exhaustAfter: number;
@@ -15,9 +17,9 @@ export class Selector {
 
   retrieveFrom(elements: HTMLElement[]): HTMLElement[] {
     let result;
-    if (this.selector === FIRST_CHILD) {
+    if (this.selector === FIRST_CHILD_MARKER) {
       result = elements.map((elem) => elem.firstChild);
-    } else if (this.selector === LAST_CHILD) {
+    } else if (this.selector === LAST_CHILD_MARKER) {
       result = elements.map((elem) => elem.lastChild);
     } else if (this.#firstOnly) {
       result = elements.map((elem) => elem.querySelector(this.selector));
@@ -28,7 +30,7 @@ export class Selector {
     return result.filter((elem) => elem !== null && elem !== undefined) as HTMLElement[];
   }
 
-  static fromArray(selectors: string[]): Selector[] {
-    return selectors.map((selector) => new Selector(selector));
+  clone(): Selector {
+    return new Selector(this.selector, {firstOnly: this.#firstOnly, exhaustAfter: this.exhaustAfter});
   }
 }

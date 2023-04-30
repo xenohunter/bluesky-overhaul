@@ -6,11 +6,14 @@ const ZipPlugin = require('zip-webpack-plugin');
 const {version} = require('./package.json');
 
 const SOURCE_ROOT = __dirname + '/src';
+const PAGES_ROOT = __dirname + '/pages';
 const DIST_ROOT = __dirname + '/dist';
 
-const checkForTodo = () => {
-  const pattern = `${SOURCE_ROOT}/**/*.js`;
-  const files = glob.sync(pattern);
+const CHROME_MANIFEST_VERSION = 3;
+const FIREFOX_MANIFEST_VERSION = 2;
+
+const checkForTodo = (pattern) => {
+  const files = glob.sync(pattern, {nodir: true});
 
   for (const file of files) {
     const contents = fs.readFileSync(file, 'utf8');
@@ -21,7 +24,7 @@ const checkForTodo = () => {
     }
   }
 
-  console.log('No TODO! strings found');
+  console.log(`No TODO! found for pattern ${pattern}`);
 };
 
 module.exports = (env) => {
@@ -42,12 +45,13 @@ module.exports = (env) => {
   console.log(`Building for ${browser} in ${mode} mode...`);
 
   if (mode === 'production') {
-    checkForTodo();
+    checkForTodo(`${SOURCE_ROOT}/**/*`);
+    checkForTodo(`${PAGES_ROOT}/**/*`);
   }
 
   const targetDir = `${DIST_ROOT}/${browser}`;
   const zipFilename = `bluesky-overhaul-${version}-${browser}.zip`;
-  const manifestVersion = (browser === 'chrome') ? 3 : 2;
+  const manifestVersion = (browser === 'chrome') ? CHROME_MANIFEST_VERSION : FIREFOX_MANIFEST_VERSION;
 
   return {
     mode: mode,
@@ -94,12 +98,40 @@ module.exports = (env) => {
             transform(content) {
               content = content.toString().replace(/"__MANIFEST_VERSION__"/g, manifestVersion.toString());
               content = content.toString().replace(/"__PACKAGE_VERSION__"/g, `"${version}"`);
+              if (manifestVersion === FIREFOX_MANIFEST_VERSION) {
+                content = content.toString().replace(/"action"/g, '"browser_action"');
+              }
               return content;
             }
           },
           {
             from: 'icons/*',
             to: 'icons/[name][ext]'
+          },
+          {
+            from: 'pages/*',
+            to: 'pages/[name][ext]',
+            transform(content, path) {
+              if (path.endsWith('.html')) {
+                content = content.toString().replace(/__BLUESKY_OVERHAUL_VERSION__/g, version);
+              }
+              return content;
+            }
+          },
+          {
+            from: 'node_modules/bootstrap/dist/css/bootstrap.css',
+            to: 'pages/bootstrap.css'
+          },
+          {
+            from: 'node_modules/awesome-notifications/dist/style.css',
+            to: 'awesome-notifications-style.css',
+          },
+          {
+            from: 'styles/*.css',
+            to: 'bluesky-overhaul.css',
+            transformAll(assets) {
+              return assets.reduce((accumulator, asset) => `${accumulator}${asset.data}\n`, "");
+            }
           }
         ]
       }),

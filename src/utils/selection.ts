@@ -64,7 +64,7 @@ export const getCurrentCursorPosition = (parentElement: HTMLElement): number => 
   return charCount;
 };
 
-export const setCurrentCursorPosition = (chars: number, element: HTMLElement) => {
+export const setCurrentCursorPosition = (chars: number, element: HTMLElement): void => {
   if (chars >= 0) {
     const selection = window.getSelection();
     const range = createRange(element, {count: chars});

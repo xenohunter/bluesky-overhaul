@@ -11,13 +11,13 @@ import {noop} from '../utils/misc';
 
 const EMOJI_CHARACTER_LENGTH = 2;
 
-const createEmojiButton = (rightmostButton: HTMLElement) => {
+const createEmojiButton = (rightmostButton: HTMLElement): HTMLElement => {
   const emojiButton = rightmostButton.cloneNode(false) as HTMLElement;
   emojiButton.innerHTML = '😀';
   return emojiButton;
 };
 
-const createEmojiPopup = (modal: HTMLElement, emojiButton: HTMLElement) => {
+const createEmojiPopup = (modal: HTMLElement, emojiButton: HTMLElement): HTMLElement => {
   const emojiPopup = document.createElement('div');
   emojiPopup.style.position = 'absolute';
   emojiPopup.style.display = 'none';
@@ -37,10 +37,10 @@ export class EmojiPipeline extends Pipeline {
   readonly #eventKeeper: EventKeeper;
   #elems: { [key: string]: HTMLElement };
   #expanded: boolean;
-  readonly #pauseExitModal: () => void;
-  readonly #resumeExitModal: () => void;
+  readonly #pauseOuterServices: () => void;
+  readonly #resumeOuterServices: () => void;
 
-  constructor(pauseExitModal: () => void, resumeExitModal: () => void) {
+  constructor(pauseCallback: () => void, resumeCallback: () => void) {
     super();
     this.#modal = null;
     this.#picker = null;
@@ -50,8 +50,8 @@ export class EmojiPipeline extends Pipeline {
     this.#elems = {};
 
     this.#expanded = false;
-    this.#pauseExitModal = pauseExitModal;
-    this.#resumeExitModal = resumeExitModal;
+    this.#pauseOuterServices = pauseCallback;
+    this.#resumeOuterServices = resumeCallback;
   }
 
   deploy(modal: HTMLElement): void {
@@ -61,7 +61,7 @@ export class EmojiPipeline extends Pipeline {
     }
 
     this.#modal = modal;
-    this.#picker = this.createPicker();
+    this.#picker = this.#createPicker();
 
     Promise.all([
       ultimatelyFind(modal, [COMPOSE_BUTTON_ROW, COMPOSE_PHOTO_BUTTON]),
@@ -77,53 +77,73 @@ export class EmojiPipeline extends Pipeline {
       this.#elems.emojiPopup.appendChild(this.#picker as unknown as HTMLElement);
       modal.appendChild(this.#elems.emojiPopup);
 
-      this.#eventKeeper.add(this.#elems.emojiButton, 'click', this.onButtonClick.bind(this));
+      this.#eventKeeper.add(this.#elems.emojiButton, 'click', this.#onButtonClick.bind(this));
 
       this.#cursor = new Cursor(this.#elems.contentEditable);
-      const outerCallback = () => this.#cursor?.save();
+      const outerCallback = (): void => this.#cursor?.save();
       this.#eventKeeper.add(this.#elems.contentEditable, 'keyup', outerCallback);
       this.#eventKeeper.add(this.#elems.contentEditable, 'mouseup', outerCallback);
     });
   }
 
-  terminate() {
+  terminate(): void {
     if (this.#modal === null) {
       log('EmojiPipeline already terminated');
       return;
     }
 
-    this.removeElements();
+    this.#removeElements();
     this.#eventKeeper.cancelAll();
     this.#modal = this.#picker = this.#cursor = null;
   }
 
-  createPicker() {
+  #createPicker(): Picker {
     return new Picker({
       emojiData,
       emojiSize: 22,
-      onEmojiSelect: (emoji: { [key: string]: any }) => {
+      onEmojiSelect: (emoji: { [key: string]: any }): void => {
         this.#cursor?.restore();
         typeText(emoji.native);
         this.#cursor?.move(EMOJI_CHARACTER_LENGTH);
+        this.#focusOnPickerSearch();
       }
     });
   }
 
-  onButtonClick() {
+  #focusOnPickerSearch(): void {
+    if (!this.#picker) return;
+    this.#getPickerSearch()?.focus();
+  }
+
+  #clearPickerSearch(): void {
+    if (!this.#picker) return;
+    const pickerSearch = this.#getPickerSearch();
+    if (pickerSearch) pickerSearch.value = '';
+  }
+
+  #getPickerSearch(): HTMLInputElement | null {
+    const picker = this.#picker as unknown as HTMLElement;
+    return picker.shadowRoot?.querySelector('input[type="search"]') as HTMLInputElement;
+  }
+
+  #onButtonClick(): void {
     if (this.#expanded) return;
 
     this.#elems.emojiPopup.style.display = 'block';
     this.#expanded = true;
-    this.#pauseExitModal();
+    this.#pauseOuterServices();
+    this.#focusOnPickerSearch();
 
-    const clickOutside = (event: Event) => {
+    const clickOutside = (event: Event): void => {
       const target = event.target as HTMLElement;
       if (this.#elems.emojiPopup && !this.#elems.emojiPopup.contains(target) && target !== this.#elems.emojiButton) {
         this.#elems.emojiPopup.style.display = 'none';
+        this.#clearPickerSearch();
         this.#expanded = false;
         this.#modal?.removeEventListener('click', clickOutside);
         document.removeEventListener('click', clickOutside);
-        this.#resumeExitModal();
+        this.#resumeOuterServices();
+        this.#elems.contentEditable.focus();
       }
     };
 
@@ -131,7 +151,7 @@ export class EmojiPipeline extends Pipeline {
     document.addEventListener('click', clickOutside);
   }
 
-  removeElements() {
+  #removeElements(): void {
     for (const element of Object.values(this.#elems)) {
       try {
         if (element.parentElement) {

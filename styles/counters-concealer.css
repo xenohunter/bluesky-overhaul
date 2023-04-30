@@ -1,0 +1,11 @@
+body.bluesky-overhaul-concealer.bluesky-overhaul-hide-followers [data-testid="profileHeaderFollowersButton"] {
+  display: none;
+}
+
+body.bluesky-overhaul-concealer.bluesky-overhaul-hide-following [data-testid="profileHeaderFollowsButton"] {
+  display: none;
+}
+
+body.bluesky-overhaul-concealer.bluesky-overhaul-hide-posts [data-testid="profileHeaderFollowsButton"] + div {
+  display: none;
+}

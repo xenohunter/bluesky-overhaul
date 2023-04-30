@@ -1,3 +1,4 @@
+import {IPausable} from '../interfaces';
 import {log} from '../utils/logger';
 import {Pipeline} from './pipeline';
 import {EventKeeper} from '../utils/eventKeeper';
@@ -5,28 +6,32 @@ import {COMPOSE_CANCEL_BUTTON, COMPOSE_POST_BUTTON, COMPOSE_CONTENT_EDITABLE} fr
 import {ultimatelyFind} from '../dom/utils';
 
 
-export class PostModalPipeline extends Pipeline {
+export class PostModalPipeline extends Pipeline implements IPausable {
   #modal: HTMLElement | null;
   #exitButton: HTMLElement | null;
   #contentEditable: HTMLElement | null;
   readonly #eventKeeper: EventKeeper;
-  #paused: boolean;
+  readonly #pauseOuterServices: () => void;
+  readonly #resumeOuterServices: () => void;
+  #paused = false;
 
-  constructor() {
+  constructor(pauseCallback: () => void, resumeCallback: () => void) {
     super();
     this.#modal = null;
     this.#exitButton = null;
     this.#contentEditable = null;
     this.#eventKeeper = new EventKeeper();
-    this.#paused = false;
+    this.#pauseOuterServices = pauseCallback;
+    this.#resumeOuterServices = resumeCallback;
   }
 
-  deploy(modal: HTMLElement) {
+  deploy(modal: HTMLElement): void {
     if (this.#modal !== null) {
       log('PostModalPipeline is already deployed');
       return;
     }
 
+    this.#pauseOuterServices();
     this.#modal = modal;
 
     Promise.all([
@@ -36,37 +41,35 @@ export class PostModalPipeline extends Pipeline {
       this.#exitButton = exitButton;
       this.#contentEditable = contentEditable;
 
-      const clickCallback = this.onClick.bind(this);
-      const keydownCallback = this.onKeydown.bind(this);
-      const stopCallback = () => this.#eventKeeper.cancelAll();
-
-      this.#eventKeeper.add(document, 'click', clickCallback);
-      this.#eventKeeper.add(document, 'keydown', keydownCallback);
-      this.#eventKeeper.add(exitButton, 'click', stopCallback);
-      this.#eventKeeper.add(contentEditable, 'keydown', keydownCallback);
+      this.#eventKeeper.add(document, 'click', this.#onClick.bind(this));
+      this.#eventKeeper.add(document, 'keydown', this.#onKeydown.bind(this));
+      this.#eventKeeper.add(contentEditable, 'keydown', this.#onKeydown.bind(this));
+      this.#eventKeeper.add(contentEditable, 'mousedown', this.#onPresumedSelect.bind(this));
+      this.#eventKeeper.add(exitButton, 'click', () => this.#eventKeeper.cancelAll());
     });
   }
 
-  terminate() {
+  terminate(): void {
     if (this.#modal === null) {
       log('PostModalPipeline is not deployed');
       return;
     }
 
-    this.resume();
+    this.start();
     this.#eventKeeper.cancelAll();
     this.#modal = this.#exitButton = this.#contentEditable = null;
+    this.#resumeOuterServices();
   }
 
-  pause() {
-    this.#paused = true;
-  }
-
-  resume() {
+  start(): void {
     this.#paused = false;
   }
 
-  onClick(event: Event) {
+  pause(): void {
+    this.#paused = true;
+  }
+
+  #onClick(event: Event): void {
     if (this.#paused) return;
 
     if (!this.#modal?.contains(event.target as Node) && event.target !== this.#exitButton) {
@@ -75,7 +78,7 @@ export class PostModalPipeline extends Pipeline {
     }
   }
 
-  onKeydown(event: KeyboardEvent) {
+  #onKeydown(event: KeyboardEvent): void {
     if (this.#paused) return;
 
     if (event.key === 'Escape') {
@@ -87,5 +90,12 @@ export class PostModalPipeline extends Pipeline {
         postButton.click();
       });
     }
+  }
+
+  #onPresumedSelect(): void {
+    if (this.#paused) return;
+
+    this.pause();
+    document.addEventListener('mouseup', () => setTimeout(this.start.bind(this), 0), {once: true});
   }
 }

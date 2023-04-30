@@ -1,7 +1,8 @@
 import {Selector} from './selector';
 import {SelectorGroup} from './selectorGroup';
 
-type TSelectorLike = Selector | SelectorGroup;
+export type TSelectorLike = Selector | SelectorGroup;
+type TSelectorOrArray = TSelectorLike | TSelectorLike[];
 
 const findInElements = (selector: TSelectorLike, elements: HTMLElement[]): Promise<HTMLElement[]> => {
   return new Promise((resolve, reject) => {
@@ -29,7 +30,7 @@ const findInElements = (selector: TSelectorLike, elements: HTMLElement[]): Promi
   });
 };
 
-export const ultimatelyFindAll = (rootElement: HTMLElement, selectors: TSelectorLike | TSelectorLike[]) => {
+export const ultimatelyFindAll = (rootElement: HTMLElement, selectors: TSelectorOrArray): Promise<HTMLElement[]> => {
   if (!(selectors instanceof Array)) selectors = [selectors];
 
   return selectors.reduce(async (previousPromise, selector): Promise<HTMLElement[]> => {
@@ -38,6 +39,6 @@ export const ultimatelyFindAll = (rootElement: HTMLElement, selectors: TSelector
   }, Promise.resolve([rootElement]));
 };
 
-export const ultimatelyFind = (rootElement: HTMLElement, selectors: TSelectorLike | TSelectorLike[]) => {
+export const ultimatelyFind = (rootElement: HTMLElement, selectors: TSelectorOrArray): Promise<HTMLElement> => {
   return ultimatelyFindAll(rootElement, selectors).then((foundElements) => foundElements?.[0] ?? null);
 };

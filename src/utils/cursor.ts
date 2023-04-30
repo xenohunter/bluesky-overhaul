@@ -9,16 +9,16 @@ export class Cursor {
     this.#position = 0;
   }
 
-  save() {
+  save(): void {
     this.#position = getCurrentCursorPosition(this.#contentEditable);
   }
 
-  restore() {
+  restore(): void {
     this.#contentEditable.focus();
     setCurrentCursorPosition(this.#position, this.#contentEditable);
   }
 
-  move(step: number) {
+  move(step: number): void {
     if (this.#contentEditable.textContent === null) return;
     this.#position += step;
     if (this.#position < 0) {

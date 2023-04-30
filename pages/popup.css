@@ -1,0 +1,28 @@
+body {
+  width: 340px;
+}
+
+body > header {
+  padding-bottom: 8px;
+}
+
+body > header .version {
+  padding-bottom: 3px;
+  background-color: #018ffe;
+}
+
+body > .central {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background-color: #ececec;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+body > .central form label .tip {
+  color: #888;
+}
+
+body > footer {
+  padding-top: 12px;
+}
