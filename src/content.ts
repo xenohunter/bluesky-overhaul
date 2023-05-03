@@ -31,12 +31,13 @@ const run = (): Promise<void> => {
     const youtubeWatcher = new YoutubeWatcher(feedContainer);
     youtubeWatcher.watch();
 
-    const postModalPipeline = new PostModalPipeline(() => keydownWatcher.pause(), () => keydownWatcher.start());
-    const emojiPipeline = new EmojiPipeline(() => postModalPipeline.pause(), () => postModalPipeline.start());
+    // const postModalPipeline = new PostModalPipeline(() => keydownWatcher.pause(), () => keydownWatcher.start());
+    // const emojiPipeline = new EmojiPipeline(() => postModalPipeline.pause(), () => postModalPipeline.start());
     const quotePostPipeline = new QuotePostPipeline();
 
     const pipelineManager = new PipelineManager({
-      compose: [postModalPipeline, emojiPipeline, quotePostPipeline]
+      // compose: [postModalPipeline, emojiPipeline, quotePostPipeline]
+      compose: [quotePostPipeline]
     });
 
     const observer = new MutationObserver((mutations) => {
