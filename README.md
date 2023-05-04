@@ -33,17 +33,9 @@ When you paste a link to someone's post:
 - **only works if the URL is at the end of the pasted text**
 - you can remove the link from the text after the card is loaded
 
-### Exit post composing modal window
-
-You can now exit the modal window by pressing `Esc` or clicking outside of it.
-
-### Send posts with `Ctrl+Enter` (or `Cmd+Enter` on Mac)
-
-That's pretty much self-explanatory.
-
 ### Keyboard navigation for photos
 
-You can navigate through photos with `←` and `→` keys and close the modal window with `Esc`.
+You can navigate through photos with `←` and `→` keys.
 
 ### YouTube embeds in feed, profile, and post pages
 
@@ -61,7 +53,7 @@ Pretty self-explanatory!
 
 ### Settings popup
 
-You can now change some settings in the extension popup window.
+You can now change some settings in the extension popup window. You can also disable the extension from that popup if something is buggy, and it will turn back on when the next version is released.
 
 ## Development
 

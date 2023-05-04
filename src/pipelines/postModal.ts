@@ -2,7 +2,7 @@ import {IPausable} from '../interfaces';
 import {log} from '../utils/logger';
 import {Pipeline} from './pipeline';
 import {EventKeeper} from '../utils/eventKeeper';
-import {COMPOSE_CANCEL_BUTTON, COMPOSE_POST_BUTTON, COMPOSE_CONTENT_EDITABLE} from '../dom/selectors';
+import {COMPOSE_CANCEL_BUTTON, COMPOSE_CONTENT_EDITABLE} from '../dom/selectors';
 import {ultimatelyFind} from '../dom/utils';
 
 
@@ -42,8 +42,6 @@ export class PostModalPipeline extends Pipeline implements IPausable {
       this.#contentEditable = contentEditable;
 
       this.#eventKeeper.add(document, 'click', this.#onClick.bind(this));
-      this.#eventKeeper.add(document, 'keydown', this.#onKeydown.bind(this));
-      this.#eventKeeper.add(contentEditable, 'keydown', this.#onKeydown.bind(this));
       this.#eventKeeper.add(contentEditable, 'mousedown', this.#onPresumedSelect.bind(this));
       this.#eventKeeper.add(exitButton, 'click', () => this.#eventKeeper.cancelAll());
     });
@@ -75,20 +73,6 @@ export class PostModalPipeline extends Pipeline implements IPausable {
     if (!this.#modal?.contains(event.target as Node) && event.target !== this.#exitButton) {
       this.#eventKeeper.cancelAll();
       this.#exitButton?.click();
-    }
-  }
-
-  #onKeydown(event: KeyboardEvent): void {
-    if (this.#paused) return;
-
-    if (event.key === 'Escape') {
-      this.#eventKeeper.cancelAll();
-      this.#exitButton?.click();
-    } else if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
-      this.#modal && ultimatelyFind(this.#modal, COMPOSE_POST_BUTTON).then((postButton) => {
-        this.#eventKeeper.cancelAll();
-        postButton.click();
-      });
     }
   }
 

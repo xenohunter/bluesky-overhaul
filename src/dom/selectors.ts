@@ -17,9 +17,7 @@ export const COMPOSE_MODAL = new Selector('[data-testid="composePostView"]'); //
 export const COMPOSE_CANCEL_BUTTON = new Selector('[data-testid="composerCancelButton"]');
 export const COMPOSE_CONTENT_EDITABLE = new Selector('div.ProseMirror');
 export const COMPOSE_LINK_CARD_BUTTON = new Selector('[data-testid="addLinkCardBtn"]');
-export const COMPOSE_POST_BUTTON = new Selector('[data-testid="composerPublishBtn"]');
-export const COMPOSE_BUTTON_ROW = new Selector('div[tabindex] > div:nth-child(3)');
-export const COMPOSE_PHOTO_BUTTON = new Selector('div[tabIndex="0"]');
+export const COMPOSE_PHOTO_BUTTON = new Selector('[data-testid="openGalleryBtn"]');
 
 export const SEARCH_BAR = new Selector('[data-testid="searchTextInput"]'); // relative to FEED_CONTAINER
 

@@ -2,6 +2,8 @@ import {FIRST_CHILD_MARKER, LAST_CHILD_MARKER} from './constants';
 
 const DEFAULT_SEARCH_TIMEOUT = 2000;
 
+// TODO : make an InstantSelector class that would have exhaustAfter = 0
+
 export class Selector {
   // TODO : add .matches(element: HTMLElement) method
 
