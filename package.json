@@ -1,6 +1,6 @@
 {
   "name": "bluesky-overhaul",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "license": "MIT",
   "dependencies": {
     "@emoji-mart/data": "^1.1.2",

@@ -5,15 +5,18 @@ const FORM_ID = 'settings';
 
 // TODO : this should be imported from the main part of the code (APP_SETTINGS from ./src/browser/appSettings.js)
 const DEFAULT_SETTINGS = {
+  'bluesky-overhaul-enabled': true,
   'vim-keybindings': false,
   'hide-followers-count': false,
   'hide-following-count': false,
   'hide-posts-count': false
 };
 
+const REQUIRES_PAGE_REFRESH = ['bluesky-overhaul-enabled'];
 const EXPERIMENTAL_SETTINGS = ['vim-keybindings'];
 
 const TIPS = {
+  'bluesky-overhaul-enabled': 'It will turn back on when the next release is ready',
   'vim-keybindings': 'Press "?" while on Bluesky to see the list of keys',
 };
 
@@ -35,6 +38,14 @@ const renderSetting = (name, currentValue) => {
   label.appendChild(input);
   const title = name.split('-').map((word) => word[0].toUpperCase() + word.slice(1)).join(' ');
   label.appendChild(document.createTextNode(title));
+
+  if (REQUIRES_PAGE_REFRESH.includes(name)) {
+    const span = document.createElement('span');
+    span.classList.add('label', 'label-danger');
+    span.appendChild(document.createTextNode('page reload'));
+    label.appendChild(document.createTextNode(' '));
+    label.appendChild(span);
+  }
 
   if (EXPERIMENTAL_SETTINGS.includes(name)) {
     const span = document.createElement('span');

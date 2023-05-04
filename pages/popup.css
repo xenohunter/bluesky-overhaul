@@ -6,9 +6,18 @@ body > header {
   padding-bottom: 8px;
 }
 
-body > header .version {
+body > header a.version {
   padding-bottom: 3px;
   background-color: #018ffe;
+}
+
+body > header a.version {
+  color: #fff;
+  text-decoration: none;
+}
+
+body > header a.version:hover {
+  text-decoration: none;
 }
 
 body > .central {

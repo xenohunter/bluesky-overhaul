@@ -1,7 +1,7 @@
 import {Picker} from 'emoji-mart';
 import {emojiData} from '../hacks/emojiDataWrapper';
 import {ultimatelyFind} from '../dom/utils';
-import {COMPOSE_BUTTON_ROW, COMPOSE_PHOTO_BUTTON, COMPOSE_CONTENT_EDITABLE} from '../dom/selectors';
+import {COMPOSE_PHOTO_BUTTON, COMPOSE_CONTENT_EDITABLE} from '../dom/selectors';
 import {Cursor} from '../utils/cursor';
 import {EventKeeper} from '../utils/eventKeeper';
 import {log} from '../utils/logger';
@@ -64,7 +64,7 @@ export class EmojiPipeline extends Pipeline {
     this.#picker = this.#createPicker();
 
     Promise.all([
-      ultimatelyFind(modal, [COMPOSE_BUTTON_ROW, COMPOSE_PHOTO_BUTTON]),
+      ultimatelyFind(modal, [COMPOSE_PHOTO_BUTTON]),
       ultimatelyFind(modal, COMPOSE_CONTENT_EDITABLE)
     ]).then(([photoButton, contentEditable]) => {
       this.#elems.photoButton = photoButton;

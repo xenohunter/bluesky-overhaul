@@ -17,6 +17,11 @@ class SettingsManager {
     this.#isInitialized = true;
   }
 
+  get(settingName: APP_SETTINGS): TSetting | undefined {
+    if (!this.#isInitialized) throw new Error('SettingsManager is not initialized');
+    return this.#currentSettings[settingName];
+  }
+
   subscribe(subscriber: ISettingsSubscriber): void {
     if (!this.#isInitialized) throw new Error('SettingsManager is not initialized');
 
