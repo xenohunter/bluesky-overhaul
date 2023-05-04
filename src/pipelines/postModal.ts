@@ -70,6 +70,10 @@ export class PostModalPipeline extends Pipeline implements IPausable {
   #onClick(event: Event): void {
     if (this.#paused) return;
 
+    // TODO : this is a hotfix, need to find a better solution
+    const target = event.target as HTMLElement;
+    if (target?.tagName.toLowerCase() === 'button') return;
+
     if (!this.#modal?.contains(event.target as Node) && event.target !== this.#exitButton) {
       this.#eventKeeper.cancelAll();
       this.#exitButton?.click();
