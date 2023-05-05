@@ -1,7 +1,4 @@
-import {APP_SETTINGS} from './appSettings';
-
-export type TSetting = boolean | number | string;
-export type TSettings = { [key in APP_SETTINGS]?: TSetting };
+import {TSettings} from '../types';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -16,6 +13,10 @@ export const clearStorage = async (): Promise<void> => {
 export const getSettings = async (): Promise<TSettings> => {
   const storage = await browserAPI.storage.local.get();
   return storage[SETTINGS_KEY] || {};
+};
+
+export const setSettings = async (newSettings: TSettings): Promise<void> => {
+  await browserAPI.storage.local.set({[SETTINGS_KEY]: newSettings});
 };
 
 export const subscribeToSettings = (listener: (newSettings: TSettings) => void): void => {

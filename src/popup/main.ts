@@ -1,27 +1,28 @@
-const browserAPI = window.browser || chrome;
+import {TSetting, TSettings} from '../types';
+import {getSettings, setSettings} from '../shared/api';
+import {APP_SETTINGS} from '../shared/appSettings';
 
 const CONTAINER_ID = 'main';
 const FORM_ID = 'settings';
 
-// TODO : this should be imported from the main part of the code (APP_SETTINGS from ./src/browser/appSettings.js)
-const DEFAULT_SETTINGS = {
-  'bluesky-overhaul-enabled': true,
-  'vim-keybindings': false,
-  'hide-followers-count': false,
-  'hide-following-count': false,
-  'hide-posts-count': false
+const DEFAULT_SETTINGS: TSettings = {
+  [APP_SETTINGS.BLUESKY_OVERHAUL_ENABLED]: true,
+  [APP_SETTINGS.HANDLE_VIM_KEYBINDINGS]: false,
+  [APP_SETTINGS.HIDE_FOLLOWERS_COUNT]: false,
+  [APP_SETTINGS.HIDE_FOLLOWING_COUNT]: false,
+  [APP_SETTINGS.HIDE_POSTS_COUNT]: false
 };
 
-const REQUIRES_PAGE_REFRESH = ['bluesky-overhaul-enabled'];
-const EXPERIMENTAL_SETTINGS = ['vim-keybindings'];
+const REQUIRES_PAGE_REFRESH = [APP_SETTINGS.BLUESKY_OVERHAUL_ENABLED];
+const EXPERIMENTAL_SETTINGS = [APP_SETTINGS.HANDLE_VIM_KEYBINDINGS];
 
-const TIPS = {
-  'bluesky-overhaul-enabled': 'It will turn back on when the next release is ready',
-  'vim-keybindings': 'Press "?" while on Bluesky to see the list of keys',
+const TIPS: TSettings = {
+  [APP_SETTINGS.BLUESKY_OVERHAUL_ENABLED]: 'It will turn back on when the next release is ready',
+  [APP_SETTINGS.HANDLE_VIM_KEYBINDINGS]: 'Press "?" while on Bluesky to see the list of keys'
 };
 
 // TODO : make a small React app for this later
-const renderSetting = (name, currentValue) => {
+const renderSetting = (name: APP_SETTINGS, currentValue: TSetting): HTMLElement => {
   const outerDiv = document.createElement('div');
   outerDiv.classList.add('form-group');
   const innerDiv = document.createElement('div');
@@ -34,7 +35,7 @@ const renderSetting = (name, currentValue) => {
   input.type = 'checkbox';
   input.id = name;
   input.name = name;
-  input.checked = currentValue;
+  input.checked = currentValue as boolean; // TODO : only works for checkboxes
   label.appendChild(input);
   const title = name.split('-').map((word) => word[0].toUpperCase() + word.slice(1)).join(' ');
   label.appendChild(document.createTextNode(title));
@@ -59,7 +60,7 @@ const renderSetting = (name, currentValue) => {
     const tip = document.createElement('div');
     tip.classList.add('tip');
     const small = document.createElement('small');
-    small.appendChild(document.createTextNode(TIPS[name]));
+    small.appendChild(document.createTextNode(TIPS[name] as string));
     tip.appendChild(small);
     label.appendChild(tip);
   }
@@ -70,40 +71,41 @@ const renderSetting = (name, currentValue) => {
   return outerDiv;
 };
 
-const renderForm = (allSettings, currentSettings, formId) => {
+const renderForm = (allSettings: TSettings, formId: string): HTMLElement => {
   const form = document.createElement('form');
   form.classList.add('form-horizontal');
   form.id = formId;
   Object.keys(allSettings).forEach((s) => {
-    form.appendChild(renderSetting(s, s in currentSettings ? currentSettings[s] : allSettings[s]));
+    const setting = s as APP_SETTINGS;
+    const inputElement = renderSetting(setting, allSettings[setting] as boolean);
+    form.appendChild(inputElement);
   });
   return form;
 };
 
-const initializeForm = () => {
-  return browserAPI.storage.local.get().then((storageContents) => {
-    const settings = storageContents.settings || {};
-    const form = renderForm(DEFAULT_SETTINGS, settings, FORM_ID);
-    document.getElementById(CONTAINER_ID).appendChild(form);
+const initializeForm = (): Promise<HTMLElement> => {
+  return getSettings().then((settings: TSettings) => {
+    const form = renderForm({...DEFAULT_SETTINGS, ...settings}, FORM_ID);
+    document.getElementById(CONTAINER_ID)?.appendChild(form);
     return form;
   });
 };
 
-const handleFormChange = (form, ev) => {
+const handleFormChange = (form: HTMLElement, ev: Event): void => {
   ev.preventDefault();
-  const newSettings = {};
+  const newSettings: TSettings = {};
   for (const [name, value] of Object.entries(DEFAULT_SETTINGS)) {
-    const input = form.querySelector(`#${name}`);
+    const n = name as APP_SETTINGS;
+
+    const input = form.querySelector(`#${name}`) as HTMLInputElement | null;
     if (input) {
-      newSettings[name] = input.checked;
+      newSettings[n] = input.checked;
     } else {
-      newSettings[name] = value;
+      newSettings[n] = value;
     }
   }
 
-  browserAPI.storage.local.set({
-    'settings': newSettings
-  });
+  setSettings(newSettings);
 };
 
 document.addEventListener('DOMContentLoaded', async () => {

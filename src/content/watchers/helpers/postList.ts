@@ -1,4 +1,4 @@
-import {IPausable} from '../../interfaces';
+import {IPausable} from '../../../interfaces';
 import {TSelectorLike, ultimatelyFindAll} from '../../dom/utils';
 import {LAST_CHILD, POST_ITEMS} from '../../dom/selectors';
 import {Selector} from '../../dom/selector';

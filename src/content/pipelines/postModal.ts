@@ -1,4 +1,4 @@
-import {IPausable} from '../interfaces';
+import {IPausable} from '../../interfaces';
 import {log} from '../utils/logger';
 import {Pipeline} from './pipeline';
 import {EventKeeper} from '../utils/eventKeeper';

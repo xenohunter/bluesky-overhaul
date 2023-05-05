@@ -13,12 +13,22 @@
   "permissions": [
     "storage"
   ],
-  "content_scripts": [{
-    "matches": ["https://staging.bsky.app/*"],
-    "css": ["awesome-notifications-style.css", "bluesky-overhaul.css"],
-    "js": ["bundle.js"]
-  }],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://bsky.app/*",
+        "https://staging.bsky.app/*"
+      ],
+      "css": [
+        "__CONTENT_DIR_NAME__/awesome-notifications-style.css",
+        "__CONTENT_DIR_NAME__/bluesky-overhaul.css"
+      ],
+      "js": [
+        "__CONTENT_DIR_NAME__/main.js"
+      ]
+    }
+  ],
   "action": {
-    "default_popup": "pages/popup.html"
+    "default_popup": "__POPUP_DIR_NAME__/popup.html"
   }
 }

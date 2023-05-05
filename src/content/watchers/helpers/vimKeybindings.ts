@@ -1,4 +1,4 @@
-import {IPausable} from '../../interfaces';
+import {IPausable} from '../../../interfaces';
 import {ROOT_CONTAINER, SEARCH_BAR} from '../../dom/selectors';
 import {EventKeeper} from '../../utils/eventKeeper';
 import {noop} from '../../utils/misc';
