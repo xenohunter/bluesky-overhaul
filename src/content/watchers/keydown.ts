@@ -1,6 +1,6 @@
-import {IPausable, ISettingsSubscriber} from '../interfaces';
-import {TSetting, TSettings} from '../browser/api';
-import {APP_SETTINGS} from '../browser/appSettings';
+import {TSetting, TSettings} from '../../types';
+import {IPausable, ISettingsSubscriber} from '../../interfaces';
+import {APP_SETTINGS} from '../../shared/appSettings';
 import {Watcher} from './watcher';
 import {VimKeybindingsHandler} from './helpers/vimKeybindings';
 import {ultimatelyFind} from '../dom/utils';

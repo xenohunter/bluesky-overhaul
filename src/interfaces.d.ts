@@ -1,5 +1,5 @@
-import {TSetting} from './browser/api';
-import {APP_SETTINGS} from './browser/appSettings';
+import {TSetting} from './types';
+import {APP_SETTINGS} from './shared/appSettings';
 
 export interface IPausable {
   start(): void;

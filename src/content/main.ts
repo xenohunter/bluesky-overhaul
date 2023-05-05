@@ -1,5 +1,5 @@
 import '@webcomponents/custom-elements';
-import {APP_SETTINGS} from './browser/appSettings';
+import {APP_SETTINGS} from '../shared/appSettings';
 import {getSettingsManager} from './browser/settingsManager';
 import {ultimatelyFind} from './dom/utils';
 import {ROOT_CONTAINER, FEED_CONTAINER, MODAL_CONTAINER, COMPOSE_MODAL} from './dom/selectors';

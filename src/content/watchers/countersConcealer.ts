@@ -1,6 +1,6 @@
-import {TSetting, TSettings} from '../browser/api';
-import {APP_SETTINGS} from '../browser/appSettings';
-import {ISettingsSubscriber} from '../interfaces';
+import {TSetting, TSettings} from '../../types';
+import {APP_SETTINGS} from '../../shared/appSettings';
+import {ISettingsSubscriber} from '../../interfaces';
 import {Watcher} from './watcher';
 
 const DEFAULT_SETTINGS: TSettings = {

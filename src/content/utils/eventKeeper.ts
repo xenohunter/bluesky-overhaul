@@ -1,4 +1,4 @@
-import type {TEventKey, TEventListener, TEventOptions} from '../types';
+import type {TEventKey, TEventListener, TEventOptions} from '../../types';
 import {noop} from './misc';
 
 type TElement = Element | Document | Window;
