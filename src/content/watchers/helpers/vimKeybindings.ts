@@ -142,7 +142,6 @@ export class VimKeybindingsHandler implements IPausable {
     this.#currentPost = post;
     this.#currentPost.classList.add(FOCUSED_POST_CLASS);
     this.#currentPost.scrollIntoView({block: 'center', behavior: 'smooth'});
-    this.#currentPost.focus({preventScroll: true});
   }
 
   #removeHighlight(): void {

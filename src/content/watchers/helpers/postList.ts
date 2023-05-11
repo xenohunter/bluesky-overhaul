@@ -39,6 +39,10 @@ const getPreviousPost = (post: HTMLElement): HTMLElement | null => {
   }
 };
 
+const isPostThreadDelimiter = (postCandidate: HTMLElement): boolean => {
+  return postCandidate.getAttribute('role') === 'link' && postCandidate.getAttribute('tabindex') === '0';
+};
+
 export class PostList implements IPausable {
   readonly #container: HTMLElement;
   readonly #mutationObserver: MutationObserver;
@@ -101,7 +105,7 @@ export class PostList implements IPausable {
         return Promise.reject('No posts found');
       } else if (this.#currentPost) {
         const neighborPost = retrieveFn(this.#currentPost);
-        if (neighborPost && posts.includes(neighborPost)) {
+        if (neighborPost && (posts.includes(neighborPost) || isPostThreadDelimiter(neighborPost))) {
           this.#currentPost = neighborPost;
         } else if (!posts.includes(this.#currentPost)) {
           this.#currentPost = posts[0];
