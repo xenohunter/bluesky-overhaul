@@ -3,7 +3,7 @@ import {APP_SETTINGS} from '../../shared/appSettings';
 import {ISettingsSubscriber} from '../../interfaces';
 import {Watcher} from './watcher';
 
-const DEFAULT_SETTINGS: TSettings = {
+const DEFAULT_SETTINGS: Partial<TSettings> = {
   [APP_SETTINGS.HIDE_FOLLOWERS_COUNT]: false,
   [APP_SETTINGS.HIDE_FOLLOWING_COUNT]: false,
   [APP_SETTINGS.HIDE_POSTS_COUNT]: false

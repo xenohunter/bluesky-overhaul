@@ -6,7 +6,7 @@ import {VimKeybindingsHandler} from './helpers/vimKeybindings';
 import {ultimatelyFind} from '../dom/utils';
 import {Selector} from '../dom/selector';
 
-const DEFAULT_SETTINGS: TSettings = {
+const DEFAULT_SETTINGS: Partial<TSettings> = {
   [APP_SETTINGS.HANDLE_VIM_KEYBINDINGS]: false
 };
 

@@ -67,10 +67,9 @@ export class PostModalPipeline extends Pipeline implements IPausable {
     this.#paused = true;
   }
 
-  #onClick(event: Event): void {
+  #onClick(event: MouseEvent): void {
     if (this.#paused) return;
 
-    // TODO : this is a hotfix, need to find a better solution
     const target = event.target as HTMLElement;
     if (target?.tagName.toLowerCase() === 'button') return;
 

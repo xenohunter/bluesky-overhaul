@@ -74,7 +74,7 @@ module.exports = (env) => {
 
     entry: {
       content: `${SOURCE_ROOT}/${CONTENT_DIR_NAME}/main.ts`,
-      popup: `${SOURCE_ROOT}/${POPUP_DIR_NAME}/main.ts`
+      popup: `${SOURCE_ROOT}/${POPUP_DIR_NAME}/main.tsx`
     },
 
     output: {

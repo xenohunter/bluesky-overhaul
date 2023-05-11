@@ -1,8 +1,9 @@
 import {Watcher} from './watcher';
 import {CallThrottler} from '../utils/callThrottler';
-import {POST_ITEMS, POST_ITEM_LINKS, POST_ITEM_LINK_INJECTED_MARKER} from '../dom/selectors';
+import {POST_ITEM_LINK_INJECTED_MARKER} from '../dom/constants';
+import {POST_ITEMS, POST_ITEM_LINKS} from '../dom/selectors';
 import {ultimatelyFindAll} from '../dom/utils';
-import {noop} from '../utils/misc';
+import {noop} from '../../shared/misc';
 
 const THROTTLING_INTERVAL = 500;
 const YOUTU_BE_REGEX = /youtu\.be\/([a-zA-Z0-9_-]+)/;

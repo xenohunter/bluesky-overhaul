@@ -1,5 +1,5 @@
 import type {TEventKey, TEventListener, TEventOptions} from '../../types';
-import {noop} from './misc';
+import {noop} from '../../shared/misc';
 
 type TElement = Element | Document | Window;
 type TEventListenerUnion = TEventListener<Event> | TEventListener<KeyboardEvent> | TEventListener<ClipboardEvent> | TEventListener<MouseEvent>;

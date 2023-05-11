@@ -7,7 +7,7 @@ import {EventKeeper} from '../utils/eventKeeper';
 import {log} from '../utils/logger';
 import {typeText} from '../utils/text';
 import {Pipeline} from './pipeline';
-import {noop} from '../utils/misc';
+import {noop} from '../../shared/misc';
 
 const EMOJI_CHARACTER_LENGTH = 2;
 
