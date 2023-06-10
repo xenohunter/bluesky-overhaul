@@ -11,7 +11,7 @@ module.exports = {
     "arrow-parens": "error",
     "comma-dangle": "off",
     "@typescript-eslint/comma-dangle": "error",
-    "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/explicit-function-return-type": ["error", {"allowExpressions": true}],
     "indent": ["error", 2],
     "no-empty-function": "off",
     "@typescript-eslint/no-empty-function": "error",

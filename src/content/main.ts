@@ -5,6 +5,7 @@ import {ultimatelyFind} from './dom/utils';
 import {ROOT_CONTAINER, FEED_CONTAINER, MODAL_CONTAINER, COMPOSE_MODAL} from './dom/selectors';
 import {CountersConcealer} from './watchers/countersConcealer';
 import {KeydownWatcher} from './watchers/keydown';
+import {PostDatetimeWatcher} from './watchers/postDatetime';
 import {YoutubeWatcher} from './watchers/youtube';
 import {PostModalPipeline} from './pipelines/postModal';
 import {EmojiPipeline} from './pipelines/emoji';
@@ -33,6 +34,10 @@ const run = async (): Promise<void> => {
     const keydownWatcher = new KeydownWatcher(rootContainer, feedContainer);
     settingsManager.subscribe(keydownWatcher);
     keydownWatcher.watch();
+
+    const postDatetimeWatcher = new PostDatetimeWatcher(feedContainer);
+    settingsManager.subscribe(postDatetimeWatcher);
+    postDatetimeWatcher.watch();
 
     const youtubeWatcher = new YoutubeWatcher(feedContainer);
     youtubeWatcher.watch();

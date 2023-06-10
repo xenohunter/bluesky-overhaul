@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     createRoot(root).render(
       <Form
         settings={settings}
-        onChange={settingsKeeper.set.bind(settingsKeeper)}
+        onChange={(name, value) => settingsKeeper.set(name, value)}
       />
     );
   }
