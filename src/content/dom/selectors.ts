@@ -1,4 +1,4 @@
-import {FIRST_CHILD_MARKER, LAST_CHILD_MARKER} from './constants';
+import {FIRST_CHILD_MARKER, LAST_CHILD_MARKER, POST_ITEM_LINK_INJECTED_MARKER} from './constants';
 import {Selector} from './selector';
 import {SelectorGroup} from './selectorGroup';
 
@@ -20,8 +20,6 @@ export const COMPOSE_LINK_CARD_BUTTON = new Selector('[data-testid="addLinkCardB
 export const COMPOSE_PHOTO_BUTTON = new Selector('[data-testid="openGalleryBtn"]');
 
 export const SEARCH_BAR = new Selector('[data-testid="searchTextInput"]'); // relative to FEED_CONTAINER
-
-export const POST_ITEM_LINK_INJECTED_MARKER = 'bluesky-overhaul-youtube-injected'; // TODO : move to constants.ts
 
 export const POST_ITEMS = new SelectorGroup([
   new Selector('[data-testid^="postThreadItem"]', {exhaustAfter: 5000}),

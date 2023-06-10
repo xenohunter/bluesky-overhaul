@@ -2,11 +2,14 @@
   "compilerOptions": {
     "module": "es6",
     "target": "es2019",
+    "jsx": "react",
     "strict": true,
     "allowJs": true,
     "sourceMap": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules"]
 }

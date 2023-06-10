@@ -1,7 +1,7 @@
 import {IPausable} from '../../../interfaces';
 import {ROOT_CONTAINER, SEARCH_BAR} from '../../dom/selectors';
 import {EventKeeper} from '../../utils/eventKeeper';
-import {noop} from '../../utils/misc';
+import {noop} from '../../../shared/misc';
 import {modal, tip} from '../../utils/notifications';
 import {PostList} from './postList';
 import {generateHelpMessage, VIM_ACTIONS, VIM_KEY_MAP} from './vimActions';
@@ -142,7 +142,6 @@ export class VimKeybindingsHandler implements IPausable {
     this.#currentPost = post;
     this.#currentPost.classList.add(FOCUSED_POST_CLASS);
     this.#currentPost.scrollIntoView({block: 'center', behavior: 'smooth'});
-    this.#currentPost.focus({preventScroll: true});
   }
 
   #removeHighlight(): void {
