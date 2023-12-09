@@ -26,10 +26,7 @@ export class PostModalPipeline extends Pipeline implements IPausable {
   }
 
   deploy(modal: HTMLElement): void {
-    if (this.#modal !== null) {
-      log('PostModalPipeline already deployed');
-      return;
-    }
+    if (this.#modal !== null) return;
 
     this.#pauseOuterServices();
     this.#modal = modal;
@@ -41,17 +38,21 @@ export class PostModalPipeline extends Pipeline implements IPausable {
       this.#exitButton = exitButton;
       this.#contentEditable = contentEditable;
 
-      this.#eventKeeper.add(document, 'click', this.#onClick.bind(this));
-      this.#eventKeeper.add(contentEditable, 'mousedown', this.#onPresumedSelect.bind(this));
+      const backdrop = this.#modal?.parentElement?.parentElement;
+      if (!backdrop) throw new Error('Modal backdrop not found');
+
+      // TODO : if you have text in modal and click on Cancel, you are prompted with a confirmation dialog
+      // TODO : if stay with the modal, the events are not restored and backdrop clicks don't work anymore
+      this.#eventKeeper.add(backdrop, 'click', this.#onClick.bind(this));
       this.#eventKeeper.add(exitButton, 'click', () => this.#eventKeeper.cancelAll());
+    }).catch((error) => {
+      log('PostModalPipeline failed to deploy', error);
+      this.terminate();
     });
   }
 
   terminate(): void {
-    if (this.#modal === null) {
-      log('PostModalPipeline is not deployed');
-      return;
-    }
+    if (this.#modal === null) return;
 
     this.start();
     this.#eventKeeper.cancelAll();
@@ -73,16 +74,9 @@ export class PostModalPipeline extends Pipeline implements IPausable {
     const target = event.target as HTMLElement;
     if (target?.tagName.toLowerCase() === 'button') return;
 
-    if (!this.#modal?.contains(event.target as Node) && event.target !== this.#exitButton) {
+    if (!this.#modal?.contains(target) && target !== this.#exitButton) {
       this.#eventKeeper.cancelAll();
       this.#exitButton?.click();
     }
-  }
-
-  #onPresumedSelect(): void {
-    if (this.#paused) return;
-
-    this.pause();
-    document.addEventListener('mouseup', () => setTimeout(this.start.bind(this), 0), {once: true});
   }
 }

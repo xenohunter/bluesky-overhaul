@@ -21,24 +21,21 @@ export class QuotePostPipeline extends Pipeline {
   }
 
   deploy(modal: HTMLElement): void {
-    if (this.#modal !== null) {
-      log('QuotePostPipeline already deployed');
-      return;
-    }
+    if (this.#modal !== null) return;
 
     this.#modal = modal;
 
     ultimatelyFind(modal, COMPOSE_CONTENT_EDITABLE).then((contentEditable) => {
       this.#contentEditable = contentEditable;
       this.#eventKeeper.add(contentEditable, 'paste', this.onPaste.bind(this), {capture: true});
+    }).catch((error) => {
+      log('QuotePostPipeline failed to deploy', error);
+      this.terminate();
     });
   }
 
   terminate(): void {
-    if (this.#modal === null) {
-      log('QuotePostPipeline is not deployed');
-      return;
-    }
+    if (this.#modal === null) return;
 
     this.#eventKeeper.cancelAll();
     this.#modal = this.#contentEditable = null;

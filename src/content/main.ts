@@ -8,7 +8,6 @@ import {KeydownWatcher} from './watchers/keydown';
 import {PostDatetimeWatcher} from './watchers/postDatetime';
 import {YoutubeWatcher} from './watchers/youtube';
 import {PostModalPipeline} from './pipelines/postModal';
-import {EmojiPipeline} from './pipelines/emoji';
 import {QuotePostPipeline} from './pipelines/quotePost';
 import {log} from './utils/logger';
 import {PipelineManager} from './utils/pipelineManager';
@@ -43,11 +42,10 @@ const run = async (): Promise<void> => {
     youtubeWatcher.watch();
 
     const postModalPipeline = new PostModalPipeline(() => keydownWatcher.pause(), () => keydownWatcher.start());
-    const emojiPipeline = new EmojiPipeline(() => postModalPipeline.pause(), () => postModalPipeline.start());
     const quotePostPipeline = new QuotePostPipeline();
 
     const pipelineManager = new PipelineManager({
-      compose: [postModalPipeline, emojiPipeline, quotePostPipeline]
+      compose: [postModalPipeline, quotePostPipeline]
     });
 
     const observer = new MutationObserver((mutations) => {
