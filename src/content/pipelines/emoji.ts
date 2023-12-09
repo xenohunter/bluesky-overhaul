@@ -88,7 +88,7 @@ export class EmojiPipeline extends Pipeline {
 
   terminate(): void {
     if (this.#modal === null) {
-      log('EmojiPipeline already terminated');
+      log('EmojiPipeline is not deployed');
       return;
     }
 

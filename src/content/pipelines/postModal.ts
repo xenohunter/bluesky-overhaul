@@ -27,7 +27,7 @@ export class PostModalPipeline extends Pipeline implements IPausable {
 
   deploy(modal: HTMLElement): void {
     if (this.#modal !== null) {
-      log('PostModalPipeline is already deployed');
+      log('PostModalPipeline already deployed');
       return;
     }
 

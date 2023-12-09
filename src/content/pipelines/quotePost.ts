@@ -22,7 +22,7 @@ export class QuotePostPipeline extends Pipeline {
 
   deploy(modal: HTMLElement): void {
     if (this.#modal !== null) {
-      log('QuotePostPipeline is already deployed');
+      log('QuotePostPipeline already deployed');
       return;
     }
 
