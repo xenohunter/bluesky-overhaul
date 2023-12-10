@@ -3,16 +3,10 @@ import {IPausable, ISettingsSubscriber} from '../../interfaces';
 import {APP_SETTINGS} from '../../shared/appSettings';
 import {Watcher} from './watcher';
 import {VimKeybindingsHandler} from './helpers/vimKeybindings';
-import {ultimatelyFind} from '../dom/utils';
-import {Selector} from '../dom/selector';
 
 const DEFAULT_SETTINGS: Partial<TSettings> = {
   [APP_SETTINGS.HANDLE_VIM_KEYBINDINGS]: false
 };
-
-const LEFT_ARROW_BUTTON = new Selector('[aria-label="Previous image"]', {exhaustAfter: 0});
-const RIGHT_ARROW_BUTTON = new Selector('[aria-label="Next image"]', {exhaustAfter: 0});
-const PHOTO_KEYS = ['ArrowLeft', 'ArrowRight'];
 
 export class KeydownWatcher extends Watcher implements IPausable, ISettingsSubscriber {
   readonly #container: HTMLElement;
@@ -60,20 +54,6 @@ export class KeydownWatcher extends Watcher implements IPausable, ISettingsSubsc
 
   #onKeydown(event: KeyboardEvent): void {
     if (this.#isPaused || event.ctrlKey || event.metaKey) return;
-
-    if (PHOTO_KEYS.includes(event.key)) {
-      Promise.all([
-        ultimatelyFind(this.#container, LEFT_ARROW_BUTTON).catch(() => null),
-        ultimatelyFind(this.#container, RIGHT_ARROW_BUTTON).catch(() => null)
-      ]).then(([leftArrow, rightArrow]) => {
-        if (event.key === 'ArrowLeft' && leftArrow !== null) {
-          leftArrow.click();
-        } else if (event.key === 'ArrowRight' && rightArrow !== null) {
-          rightArrow.click();
-        }
-      });
-    } else {
-      this.#vimHandler.handle(event);
-    }
+    this.#vimHandler.handle(event);
   }
 }
