@@ -11,6 +11,7 @@ class SettingsManager extends SettingsProvider {
   readonly #listeners: { [key in APP_SETTINGS]?: TListener[] } = {};
 
   async initialize(): Promise<void> {
+    // TODO : this might be called twice or more, which is not good
     await super.initialize();
     subscribeToSettings(this.#onSettingsChange.bind(this));
   }

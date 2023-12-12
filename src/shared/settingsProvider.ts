@@ -1,19 +1,24 @@
 import {TSetting, TSettings} from '../types';
 import {APP_SETTINGS, DEFAULT_SETTINGS} from './appSettings';
 import {getSettings, setSettings} from './browserApi';
-import { compareSemver } from './misc';
-import { BLUESKY_OVERHAUL_VERSION } from './version';
+import {compareSemver} from './misc';
+import {BLUESKY_OVERHAUL_VERSION} from './version';
+import {log} from '../content/utils/logger';
 
 const possiblyMigrate = async (settings: TSettings): Promise<TSettings> => {
-  const isEnabled = settings[APP_SETTINGS.BLUESKY_OVERHAUL_ENABLED] as boolean;
   const lastUpdatedVersion = settings[APP_SETTINGS.SETTINGS_LAST_UPDATED_VERSION] as string;
+  const comparison = compareSemver(BLUESKY_OVERHAUL_VERSION, lastUpdatedVersion);
 
-  if (isEnabled === false && compareSemver(BLUESKY_OVERHAUL_VERSION, lastUpdatedVersion) === 1) {
-    settings[APP_SETTINGS.BLUESKY_OVERHAUL_ENABLED] = true;
+  if (comparison === 1) {
+    log('Migrating settings from', lastUpdatedVersion, 'to', BLUESKY_OVERHAUL_VERSION);
     settings[APP_SETTINGS.SETTINGS_LAST_UPDATED_VERSION] = BLUESKY_OVERHAUL_VERSION;
+    settings[APP_SETTINGS.BLUESKY_OVERHAUL_ENABLED] = true;
+    await setSettings(settings);
+  } else if (comparison === -1) {
+    log(`Settings are from the future, resetting back to defaults (${lastUpdatedVersion} > ${BLUESKY_OVERHAUL_VERSION})`);
+    await setSettings(DEFAULT_SETTINGS);
   }
 
-  await setSettings(settings);
   return settings;
 };
 
@@ -26,8 +31,8 @@ export class SettingsProvider {
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     const savedSettings = await getSettings();
-    await possiblyMigrate(savedSettings);
-    this.settings = {...DEFAULT_SETTINGS, ...savedSettings};
+    const migratedSettings = await possiblyMigrate(savedSettings);
+    this.settings = {...DEFAULT_SETTINGS, ...migratedSettings};
     this.isInitialized = true;
   }
 

@@ -8,7 +8,10 @@ export const delay = (ms: number): Promise<void> => {
 };
 
 /** Returns 1 if the first argument is greater than the second one */
-export const compareSemver = (a: string, b: string): number => {
+export const compareSemver = (a?: string, b?: string): number => {
+  a = a || '0.0.0';
+  b = b || '0.0.0';
+
   const aParts = a.split('.');
   const bParts = b.split('.');
 

@@ -69,7 +69,8 @@ const run = async (): Promise<void> => {
 
 run().then(() => {
   log(`Launched [${BLUESKY_OVERHAUL_VERSION}]`);
-}).catch(() => {
+}).catch((e) => {
+  if (e === EXTENSION_DISABLED_CODE) return;
   setTimeout(() => {
     run().then(() => {
       log(`Launched after the second attempt (1000ms delay) [${BLUESKY_OVERHAUL_VERSION}]`);

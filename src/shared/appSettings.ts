@@ -12,6 +12,7 @@ export enum APP_SETTINGS {
   BSKY_PASSWORD = 'bsky-password'
 }
 
+// TODO : check if all settings are of the correct type, otherwise cast them to undefined
 export const DEFAULT_SETTINGS: TSettings = {
   [APP_SETTINGS.SETTINGS_LAST_UPDATED_VERSION]: '0.0.0',
   [APP_SETTINGS.BLUESKY_OVERHAUL_ENABLED]: true,

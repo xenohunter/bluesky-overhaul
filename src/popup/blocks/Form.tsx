@@ -10,6 +10,8 @@ const nameToText = (name: string): string => {
   return name.split('-').map((word) => word[0].toUpperCase() + word.slice(1)).join(' ');
 };
 
+const IGNORED_SETTINGS = new Set([APP_SETTINGS.SETTINGS_LAST_UPDATED_VERSION]);
+
 const BADGES: { [key in APP_SETTINGS]?: { type: BADGE_LEVEL, text: string } } = {
   [APP_SETTINGS.BLUESKY_OVERHAUL_ENABLED]: {type: BADGE_LEVEL.DANGER, text: 'page reload'},
   [APP_SETTINGS.HANDLE_VIM_KEYBINDINGS]: {type: BADGE_LEVEL.WARNING, text: 'experimental'},
@@ -31,6 +33,8 @@ export default function Form({settings, onChange}: FormProps): JSX.Element {
   return (
     <form className="form-horizontal" onSubmit={preventDefault}>
       {Object.keys(settings).map((setting) => {
+        if (IGNORED_SETTINGS.has(setting as APP_SETTINGS)) return null;
+
         const name = setting as keyof TSettings;
         const value = settings[name];
 
