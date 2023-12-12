@@ -11,6 +11,7 @@ import {PostModalPipeline} from './pipelines/postModal';
 import {QuotePostPipeline} from './pipelines/quotePost';
 import {log} from './utils/logger';
 import {PipelineManager} from './utils/pipelineManager';
+import { BLUESKY_OVERHAUL_VERSION } from '../shared/version';
 
 const REPO_LINK = 'https://github.com/xenohunter/bluesky-overhaul';
 const EXTENSION_DISABLED_CODE = 'EXTENSION_DISABLED';
@@ -67,11 +68,11 @@ const run = async (): Promise<void> => {
 };
 
 run().then(() => {
-  log('Launched');
+  log(`Launched [${BLUESKY_OVERHAUL_VERSION}]`);
 }).catch(() => {
   setTimeout(() => {
     run().then(() => {
-      log('Launched after the second attempt (1000ms delay)');
+      log(`Launched after the second attempt (1000ms delay) [${BLUESKY_OVERHAUL_VERSION}]`);
     }).catch((e) => {
       if (e === EXTENSION_DISABLED_CODE) return;
       console.error(`Failed to launch Bluesky Overhaul. Please, copy the error and report this issue: ${REPO_LINK}`);
