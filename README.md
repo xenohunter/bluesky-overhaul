@@ -2,11 +2,14 @@
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/cllpkmbebfmadmkkpplnaaffnhjjpgbi)](https://chrome.google.com/webstore/detail/bluesky-overhaul/cllpkmbebfmadmkkpplnaaffnhjjpgbi)
 [![Mozilla Add-on](https://img.shields.io/amo/v/bluesky-overhaul)](https://addons.mozilla.org/en-US/firefox/addon/bluesky-overhaul/)
-[![Liberapay receiving](https://img.shields.io/liberapay/receives/blisstweeting)](https://liberapay.com/blisstweeting/)
+
+[![ENS](https://img.shields.io/badge/ENS-blisstweeting.eth-yellow)](https://etherscan.io/address/0x567ccDD062Ec253293B2A3C0459A86c00CdDfDbe)
+[![Liberapay](https://img.shields.io/liberapay/patrons/blisstweeting?label=Liberapay)](https://liberapay.com/blisstweeting)
+[![Patreon](https://img.shields.io/badge/Patreon-4-yellow)](https://www.patreon.com/architectofthought)
 
 This is a small extension for [Chrome](https://chrome.google.com/webstore/detail/bluesky-overhaul/cllpkmbebfmadmkkpplnaaffnhjjpgbi) (and partially [Firefox](https://addons.mozilla.org/addon/bluesky-overhaul/)) that adds some nice and handy functionality to [Bluesky](https://bsky.app/), the greatest media platform of all time.
 
-Right now (as of April 19, 2023), the app is invite-only and the web app is running at https://staging.bsky.app/ (you may find yours truly at [@blisstweeting.ingroup.social](https://staging.bsky.app/profile/blisstweeting.ingroup.social)).
+Right now (as of December 2023), the app is invite-only and the web app is running at [bsky.app](https://bsky.app/) (you may find yours truly at [@blisstweeting.xyz](https://bsky.app/profile/blisstweeting.xyz)).
 
 ## Table of contents
 
@@ -17,14 +20,6 @@ Right now (as of April 19, 2023), the app is invite-only and the web app is runn
 
 Implemented features are listed here. For the planned ones, see [Issues](https://github.com/xenohunter/bluesky-overhaul/issues). Also, some new ideas may appear in [this Bluesky thread](https://staging.bsky.app/profile/blisstweeting.ingroup.social/post/3jszn6rreec2i) (login required). You can also [create an issue](https://github.com/xenohunter/bluesky-overhaul/issues/new) if you have a feature request.
 
-### Emoji picker
-
-Allows you to pick emojis from a palette of all available emojis. You can also search for emojis by name.
-
-_Doesn't work on Firefox yet._
-
-![emoji-picker.png](docs/emoji-picker.png)
-
 ### Auto quote-posting
 
 When you paste a link to someone's post:
@@ -32,10 +27,6 @@ When you paste a link to someone's post:
 - clicks the "Add link card" button for you
 - **only works if the URL is at the end of the pasted text**
 - you can remove the link from the text after the card is loaded
-
-### Keyboard navigation for photos
-
-You can navigate through photos with `←` and `→` keys.
 
 ### YouTube embeds in feed, profile, and post pages
 
@@ -55,13 +46,17 @@ Pretty self-explanatory!
 
 You can now change some settings in the extension popup window. You can also disable the extension from that popup if something is buggy, and it will turn back on when the next version is released.
 
+### Popovers with precise time for post links
+
+When you hover over a link to a post, you'll see a popover with the exact time of the post.
+
 ## Development
 
 ### Local build
 
 ```
 npm install
-npm run build
+npm run build:dev
 ```
 
 ### Development guide
