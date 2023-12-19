@@ -1,5 +1,5 @@
-import {Pipeline} from '../pipelines/pipeline';
-import {log} from './logger';
+import { Pipeline } from '../pipelines/pipeline';
+import { log } from './logger';
 
 export class PipelineManager {
   pipelines: { [key: string]: Pipeline[] };

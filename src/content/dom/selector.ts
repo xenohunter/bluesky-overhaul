@@ -1,4 +1,4 @@
-import {FIRST_CHILD_MARKER, LAST_CHILD_MARKER} from './constants';
+import { FIRST_CHILD_MARKER, LAST_CHILD_MARKER } from './constants';
 
 const DEFAULT_SEARCH_TIMEOUT = 2000;
 

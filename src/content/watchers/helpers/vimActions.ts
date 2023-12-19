@@ -1,13 +1,11 @@
 export enum VIM_ACTIONS {
   EXPAND_IMAGE = 'expand_image',
   LIKE = 'like',
-  LOAD_NEW_POSTS = 'load_new_posts',
   CREATE_POST = 'create_post',
   NEXT_POST = 'next_post',
   OPEN_POST = 'open_post',
   PREVIOUS_POST = 'previous_post',
   REPLY = 'reply',
-  REPOST = 'repost',
   SEARCH = 'search',
   SHOW_HELP = 'show_help'
 }
@@ -15,14 +13,12 @@ export enum VIM_ACTIONS {
 export const VIM_KEY_MAP = {
   '?': VIM_ACTIONS.SHOW_HELP,
   '/': VIM_ACTIONS.SEARCH,
-  '.': VIM_ACTIONS.LOAD_NEW_POSTS,
   'j': VIM_ACTIONS.NEXT_POST,
   'k': VIM_ACTIONS.PREVIOUS_POST,
   'l': VIM_ACTIONS.LIKE,
   'n': VIM_ACTIONS.CREATE_POST,
   'o': VIM_ACTIONS.EXPAND_IMAGE,
   'r': VIM_ACTIONS.REPLY,
-  't': VIM_ACTIONS.REPOST,
   'ArrowDown': VIM_ACTIONS.NEXT_POST,
   'ArrowUp': VIM_ACTIONS.PREVIOUS_POST,
   'Enter': VIM_ACTIONS.OPEN_POST

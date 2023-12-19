@@ -1,8 +1,8 @@
-import {IPausable} from '../../../interfaces';
-import {TSelectorLike, ultimatelyFindAll} from '../../dom/utils';
-import {LAST_CHILD, POST_ITEMS} from '../../dom/selectors';
-import {Selector} from '../../dom/selector';
-import {EventKeeper} from '../../utils/eventKeeper';
+import { IPausable } from '../../../interfaces';
+import { TSelectorLike, ultimatelyFindAll } from '../../dom/utils';
+import { LAST_CHILD, POST_ITEMS } from '../../dom/selectors';
+import { Selector } from '../../dom/selector';
+import { EventKeeper } from '../../utils/eventKeeper';
 
 const LAG = 100;
 

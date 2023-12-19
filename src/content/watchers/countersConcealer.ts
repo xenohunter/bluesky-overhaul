@@ -1,7 +1,7 @@
-import {TSetting, TSettings} from '../../types';
-import {APP_SETTINGS} from '../../shared/appSettings';
-import {ISettingsSubscriber} from '../../interfaces';
-import {Watcher} from './watcher';
+import { TSetting, TSettings } from '../../types';
+import { APP_SETTINGS } from '../../shared/appSettings';
+import { ISettingsSubscriber } from '../../interfaces';
+import { Watcher } from './watcher';
 
 const DEFAULT_SETTINGS: Partial<TSettings> = {
   [APP_SETTINGS.HIDE_FOLLOWERS_COUNT]: false,

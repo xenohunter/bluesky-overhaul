@@ -1,9 +1,9 @@
-import {COMPOSE_CONTENT_EDITABLE, COMPOSE_LINK_CARD_BUTTON} from '../dom/selectors';
-import {log} from '../utils/logger';
-import {typeText, backspace} from '../utils/text';
-import {Pipeline} from './pipeline';
-import {ultimatelyFind} from '../dom/utils';
-import {EventKeeper} from '../utils/eventKeeper';
+import { COMPOSE_CONTENT_EDITABLE, COMPOSE_LINK_CARD_BUTTON } from '../dom/selectors';
+import { log } from '../utils/logger';
+import { typeText, backspace } from '../utils/text';
+import { Pipeline } from './pipeline';
+import { ultimatelyFind } from '../dom/utils';
+import { EventKeeper } from '../utils/eventKeeper';
 
 const STAGING_URL_REGEX = /.*(https:\/\/staging\.bsky\.app\/profile\/.*\/post\/.*\/?)$/;
 const URL_REGEX = /.*(https:\/\/bsky\.app\/profile\/.*\/post\/.*\/?)$/;
@@ -21,24 +21,21 @@ export class QuotePostPipeline extends Pipeline {
   }
 
   deploy(modal: HTMLElement): void {
-    if (this.#modal !== null) {
-      log('QuotePostPipeline is already deployed');
-      return;
-    }
+    if (this.#modal !== null) return;
 
     this.#modal = modal;
 
     ultimatelyFind(modal, COMPOSE_CONTENT_EDITABLE).then((contentEditable) => {
       this.#contentEditable = contentEditable;
       this.#eventKeeper.add(contentEditable, 'paste', this.onPaste.bind(this), {capture: true});
+    }).catch((error) => {
+      log('QuotePostPipeline failed to deploy', error);
+      this.terminate();
     });
   }
 
   terminate(): void {
-    if (this.#modal === null) {
-      log('QuotePostPipeline is not deployed');
-      return;
-    }
+    if (this.#modal === null) return;
 
     this.#eventKeeper.cancelAll();
     this.#modal = this.#contentEditable = null;

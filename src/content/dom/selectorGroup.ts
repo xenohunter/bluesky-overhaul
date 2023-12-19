@@ -1,4 +1,4 @@
-import {Selector} from './selector';
+import { Selector } from './selector';
 
 export class SelectorGroup {
   readonly #selectors: Selector[];

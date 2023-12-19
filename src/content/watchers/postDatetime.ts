@@ -1,12 +1,12 @@
 import { createPopper } from '@popperjs/core';
 
-import {TSetting, TSettings} from '../../types';
-import {APP_SETTINGS} from '../../shared/appSettings';
-import {ISettingsSubscriber} from '../../interfaces';
-import {Watcher} from './watcher';
-import {getSettingsManager} from '../browser/settingsManager';
-import {getAgent, fetchPost, LoginError} from '../bsky/api';
-import {alert} from '../utils/notifications';
+import { TSetting, TSettings } from '../../types';
+import { APP_SETTINGS } from '../../shared/appSettings';
+import { ISettingsSubscriber } from '../../interfaces';
+import { Watcher } from './watcher';
+import { getSettingsManager } from '../browser/settingsManager';
+import { getAgent, fetchPost, LoginError } from '../bsky/api';
+import { alert } from '../utils/notifications';
 
 const DEFAULT_SETTINGS: Partial<TSettings> = {
   [APP_SETTINGS.SHOW_POST_DATETIME]: false,

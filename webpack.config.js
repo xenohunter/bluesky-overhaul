@@ -1,6 +1,7 @@
 const fs = require('fs');
 const glob = require('glob');
 const CopyPlugin = require('copy-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 const RemovePlugin = require('remove-files-webpack-plugin');
 const ZipPlugin = require('zip-webpack-plugin');
 const {version} = require('./package.json');
@@ -104,6 +105,13 @@ module.exports = (env) => {
             `${DIST_ROOT}/${zipFilename}`
           ]
         }
+      }),
+
+      new Dotenv(mode === PROD_MODE ? {
+        path: '.env'
+      } : {
+        path: '.env.develop',
+        allowEmptyValues: true
       }),
 
       new CopyPlugin({

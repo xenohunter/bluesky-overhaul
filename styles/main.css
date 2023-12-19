@@ -1,5 +1,13 @@
-.bluesky-overhaul-focused-post {
-  box-shadow: inset 0 0 5px 1px rgba(0, 0, 0, 0.75);
+@media (prefers-color-scheme: light) {
+  .bluesky-overhaul-focused-post {
+    box-shadow: inset 0 0 5px 1px rgba(0, 0, 0, 0.75);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .bluesky-overhaul-focused-post {
+    box-shadow: inset 0 0 5px 1px rgba(255, 255, 255, 0.75);
+  }
 }
 
 .bluesky-overhaul-help {

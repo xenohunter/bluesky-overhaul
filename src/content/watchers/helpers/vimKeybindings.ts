@@ -1,11 +1,11 @@
-import {IPausable} from '../../../interfaces';
-import {ROOT_CONTAINER, SEARCH_BAR} from '../../dom/selectors';
-import {EventKeeper} from '../../utils/eventKeeper';
-import {noop} from '../../../shared/misc';
-import {modal, tip} from '../../utils/notifications';
-import {PostList} from './postList';
-import {generateHelpMessage, VIM_ACTIONS, VIM_KEY_MAP} from './vimActions';
-import {ultimatelyFind} from '../../dom/utils';
+import { IPausable } from '../../../interfaces';
+import { ROOT_CONTAINER, SEARCH_BAR } from '../../dom/selectors';
+import { EventKeeper } from '../../utils/eventKeeper';
+import { noop } from '../../../shared/misc';
+import { modal, tip } from '../../utils/notifications';
+import { PostList } from './postList';
+import { generateHelpMessage, VIM_ACTIONS, VIM_KEY_MAP } from './vimActions';
+import { ultimatelyFind } from '../../dom/utils';
 
 enum DIRECTION { NEXT, PREVIOUS }
 
@@ -13,7 +13,6 @@ const FOCUSED_POST_CLASS = 'bluesky-overhaul-focused-post';
 const MISSING_POST_ERROR = 'No post is focused';
 
 const REPLY_BUTTON_SELECTOR = '[data-testid="replyBtn"]';
-const REPOST_BUTTON_SELECTOR = '[data-testid="repostBtn"]';
 const LIKE_BUTTON_SELECTOR = '[data-testid="likeBtn"]';
 
 export class VimKeybindingsHandler implements IPausable {
@@ -63,9 +62,6 @@ export class VimKeybindingsHandler implements IPausable {
     case VIM_ACTIONS.SEARCH:
       this.#focusSearchBar();
       break;
-    case VIM_ACTIONS.LOAD_NEW_POSTS:
-      this.#loadNewPosts();
-      break;
     case VIM_ACTIONS.NEXT_POST:
       this.#selectPost(DIRECTION.NEXT);
       break;
@@ -83,9 +79,6 @@ export class VimKeybindingsHandler implements IPausable {
       break;
     case VIM_ACTIONS.REPLY:
       this.#replyToPost();
-      break;
-    case VIM_ACTIONS.REPOST:
-      this.#repostPost();
       break;
     case VIM_ACTIONS.OPEN_POST:
       this.#currentPost?.click();
@@ -107,12 +100,6 @@ export class VimKeybindingsHandler implements IPausable {
     if (!this.#currentPost) return tip(MISSING_POST_ERROR);
     const reply = this.#currentPost.querySelector(REPLY_BUTTON_SELECTOR) as HTMLElement;
     reply?.click();
-  }
-
-  #repostPost(): void {
-    if (!this.#currentPost) return tip(MISSING_POST_ERROR);
-    const repost = this.#currentPost.querySelector(REPOST_BUTTON_SELECTOR) as HTMLElement;
-    repost?.click();
   }
 
   #likePost(): void {
@@ -173,23 +160,6 @@ export class VimKeybindingsHandler implements IPausable {
 
   #findSearchBar(): Promise<HTMLElement> {
     return ultimatelyFind(document.body, SEARCH_BAR);
-  }
-
-  async #loadNewPosts(): Promise<void> {
-    try {
-      const tab = await this.#postList.getCurrentFeedTab();
-      const tabContainer = await ultimatelyFind(this.#container, tab);
-      const newPostsButton = tabContainer.childNodes[1] as HTMLElement;
-
-      if (newPostsButton && newPostsButton.nextSibling) {
-        newPostsButton.click();
-        this.#container.scrollIntoView({block: 'start', behavior: 'smooth'});
-      } else {
-        tip('No new posts to load');
-      }
-    } catch {
-      tip('You are not on the feed page');
-    }
   }
 
   async #newPost(): Promise<void> {

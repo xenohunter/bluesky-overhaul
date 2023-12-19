@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import Badge, {BADGE_LEVEL} from './Badge';
+import React, { useState } from 'react';
+import Badge, { BADGE_LEVEL } from './Badge';
 import Tip from './Tip';
 
 type CheckboxProps = {

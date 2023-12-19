@@ -1,9 +1,12 @@
 import React from 'react';
-import {createRoot} from 'react-dom/client';
-import {getSettingsKeeper} from './settingsKeeper';
+import { createRoot } from 'react-dom/client';
+import { initializeSentry } from '../shared/sentry';
+import { getSettingsKeeper } from './settingsKeeper';
 import Form from './blocks/Form';
 
 const CONTAINER_ID = 'main';
+
+initializeSentry('popup');
 
 document.addEventListener('DOMContentLoaded', async () => {
   const settingsKeeper = await getSettingsKeeper();

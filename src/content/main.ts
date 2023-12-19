@@ -1,20 +1,23 @@
 import '@webcomponents/custom-elements';
-import {APP_SETTINGS} from '../shared/appSettings';
-import {getSettingsManager} from './browser/settingsManager';
-import {ultimatelyFind} from './dom/utils';
-import {ROOT_CONTAINER, FEED_CONTAINER, MODAL_CONTAINER, COMPOSE_MODAL} from './dom/selectors';
-import {CountersConcealer} from './watchers/countersConcealer';
-import {KeydownWatcher} from './watchers/keydown';
-import {PostDatetimeWatcher} from './watchers/postDatetime';
-import {YoutubeWatcher} from './watchers/youtube';
-import {PostModalPipeline} from './pipelines/postModal';
-import {EmojiPipeline} from './pipelines/emoji';
-import {QuotePostPipeline} from './pipelines/quotePost';
-import {log} from './utils/logger';
-import {PipelineManager} from './utils/pipelineManager';
+import { APP_SETTINGS } from '../shared/appSettings';
+import { initializeSentry } from '../shared/sentry';
+import { BLUESKY_OVERHAUL_VERSION } from '../shared/version';
+import { getSettingsManager } from './browser/settingsManager';
+import { ultimatelyFind } from './dom/utils';
+import { ROOT_CONTAINER, FEED_CONTAINER, MODAL_CONTAINER, COMPOSE_MODAL } from './dom/selectors';
+import { CountersConcealer } from './watchers/countersConcealer';
+import { KeydownWatcher } from './watchers/keydown';
+import { PostDatetimeWatcher } from './watchers/postDatetime';
+import { YoutubeWatcher } from './watchers/youtube';
+import { PostModalPipeline } from './pipelines/postModal';
+import { QuotePostPipeline } from './pipelines/quotePost';
+import { log } from './utils/logger';
+import { PipelineManager } from './utils/pipelineManager';
 
 const REPO_LINK = 'https://github.com/xenohunter/bluesky-overhaul';
 const EXTENSION_DISABLED_CODE = 'EXTENSION_DISABLED';
+
+initializeSentry('content');
 
 const run = async (): Promise<void> => {
   const settingsManager = await getSettingsManager();
@@ -43,11 +46,10 @@ const run = async (): Promise<void> => {
     youtubeWatcher.watch();
 
     const postModalPipeline = new PostModalPipeline(() => keydownWatcher.pause(), () => keydownWatcher.start());
-    const emojiPipeline = new EmojiPipeline(() => postModalPipeline.pause(), () => postModalPipeline.start());
     const quotePostPipeline = new QuotePostPipeline();
 
     const pipelineManager = new PipelineManager({
-      compose: [postModalPipeline, emojiPipeline, quotePostPipeline]
+      compose: [postModalPipeline, quotePostPipeline]
     });
 
     const observer = new MutationObserver((mutations) => {
@@ -69,11 +71,12 @@ const run = async (): Promise<void> => {
 };
 
 run().then(() => {
-  log('Launched');
-}).catch(() => {
+  log(`Launched [${BLUESKY_OVERHAUL_VERSION}]`);
+}).catch((e) => {
+  if (e === EXTENSION_DISABLED_CODE) return;
   setTimeout(() => {
     run().then(() => {
-      log('Launched after the second attempt (1000ms delay)');
+      log(`Launched after the second attempt (1000ms delay) [${BLUESKY_OVERHAUL_VERSION}]`);
     }).catch((e) => {
       if (e === EXTENSION_DISABLED_CODE) return;
       console.error(`Failed to launch Bluesky Overhaul. Please, copy the error and report this issue: ${REPO_LINK}`);
