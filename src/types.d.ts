@@ -1,6 +1,6 @@
 import '@types/chrome';
 import '@types/firefox';
-import {APP_SETTINGS} from './shared/appSettings';
+import { APP_SETTINGS } from './shared/appSettings';
 
 export type TSetting = boolean | number | string;
 export type TSettings = { [key in APP_SETTINGS]: TSetting };

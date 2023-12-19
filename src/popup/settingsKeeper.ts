@@ -1,7 +1,7 @@
-import {TSetting} from '../types';
-import {APP_SETTINGS, DEFAULT_SETTINGS} from '../shared/appSettings';
-import {setSettings} from '../shared/browserApi';
-import {SettingsProvider} from '../shared/settingsProvider';
+import { TSetting } from '../types';
+import { APP_SETTINGS, DEFAULT_SETTINGS } from '../shared/appSettings';
+import { setSettings } from '../shared/browserApi';
+import { SettingsProvider } from '../shared/settingsProvider';
 
 class SettingsKeeper extends SettingsProvider {
   async set(settingName: APP_SETTINGS, value: TSetting): Promise<void> {

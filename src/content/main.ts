@@ -1,20 +1,23 @@
 import '@webcomponents/custom-elements';
-import {APP_SETTINGS} from '../shared/appSettings';
-import {getSettingsManager} from './browser/settingsManager';
-import {ultimatelyFind} from './dom/utils';
-import {ROOT_CONTAINER, FEED_CONTAINER, MODAL_CONTAINER, COMPOSE_MODAL} from './dom/selectors';
-import {CountersConcealer} from './watchers/countersConcealer';
-import {KeydownWatcher} from './watchers/keydown';
-import {PostDatetimeWatcher} from './watchers/postDatetime';
-import {YoutubeWatcher} from './watchers/youtube';
-import {PostModalPipeline} from './pipelines/postModal';
-import {QuotePostPipeline} from './pipelines/quotePost';
-import {log} from './utils/logger';
-import {PipelineManager} from './utils/pipelineManager';
+import { APP_SETTINGS } from '../shared/appSettings';
+import { initializeSentry } from '../shared/sentry';
 import { BLUESKY_OVERHAUL_VERSION } from '../shared/version';
+import { getSettingsManager } from './browser/settingsManager';
+import { ultimatelyFind } from './dom/utils';
+import { ROOT_CONTAINER, FEED_CONTAINER, MODAL_CONTAINER, COMPOSE_MODAL } from './dom/selectors';
+import { CountersConcealer } from './watchers/countersConcealer';
+import { KeydownWatcher } from './watchers/keydown';
+import { PostDatetimeWatcher } from './watchers/postDatetime';
+import { YoutubeWatcher } from './watchers/youtube';
+import { PostModalPipeline } from './pipelines/postModal';
+import { QuotePostPipeline } from './pipelines/quotePost';
+import { log } from './utils/logger';
+import { PipelineManager } from './utils/pipelineManager';
 
 const REPO_LINK = 'https://github.com/xenohunter/bluesky-overhaul';
 const EXTENSION_DISABLED_CODE = 'EXTENSION_DISABLED';
+
+initializeSentry('content');
 
 const run = async (): Promise<void> => {
   const settingsManager = await getSettingsManager();

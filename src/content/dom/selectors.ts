@@ -1,6 +1,6 @@
-import {FIRST_CHILD_MARKER, LAST_CHILD_MARKER, POST_ITEM_LINK_INJECTED_MARKER} from './constants';
-import {Selector} from './selector';
-import {SelectorGroup} from './selectorGroup';
+import { FIRST_CHILD_MARKER, LAST_CHILD_MARKER, POST_ITEM_LINK_INJECTED_MARKER } from './constants';
+import { Selector } from './selector';
+import { SelectorGroup } from './selectorGroup';
 
 // TODO : remake Selector and SelectorGroup in such a way they could support relative chaining
 

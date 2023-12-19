@@ -1,11 +1,11 @@
-import {IPausable} from '../../../interfaces';
-import {ROOT_CONTAINER, SEARCH_BAR} from '../../dom/selectors';
-import {EventKeeper} from '../../utils/eventKeeper';
-import {noop} from '../../../shared/misc';
-import {modal, tip} from '../../utils/notifications';
-import {PostList} from './postList';
-import {generateHelpMessage, VIM_ACTIONS, VIM_KEY_MAP} from './vimActions';
-import {ultimatelyFind} from '../../dom/utils';
+import { IPausable } from '../../../interfaces';
+import { ROOT_CONTAINER, SEARCH_BAR } from '../../dom/selectors';
+import { EventKeeper } from '../../utils/eventKeeper';
+import { noop } from '../../../shared/misc';
+import { modal, tip } from '../../utils/notifications';
+import { PostList } from './postList';
+import { generateHelpMessage, VIM_ACTIONS, VIM_KEY_MAP } from './vimActions';
+import { ultimatelyFind } from '../../dom/utils';
 
 enum DIRECTION { NEXT, PREVIOUS }
 

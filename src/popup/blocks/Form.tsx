@@ -1,10 +1,10 @@
-import {TSetting, TSettings} from '../../types';
+import { TSetting, TSettings } from '../../types';
 import React from 'react';
-import {APP_SETTINGS} from '../../shared/appSettings';
+import { APP_SETTINGS } from '../../shared/appSettings';
 import Checkbox from '../components/Checkbox';
 import Input from '../components/Input';
-import {BADGE_LEVEL} from '../components/Badge';
-import {preventDefault} from '../../shared/misc';
+import { BADGE_LEVEL } from '../components/Badge';
+import { preventDefault } from '../../shared/misc';
 
 const nameToText = (name: string): string => {
   return name.split('-').map((word) => word[0].toUpperCase() + word.slice(1)).join(' ');

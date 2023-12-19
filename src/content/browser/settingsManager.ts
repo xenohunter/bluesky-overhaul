@@ -1,9 +1,9 @@
-import {TSetting, TSettings} from '../../types';
-import {ISettingsSubscriber} from '../../interfaces';
-import {APP_SETTINGS} from '../../shared/appSettings';
-import {subscribeToSettings} from '../../shared/browserApi';
-import {SettingsProvider} from '../../shared/settingsProvider';
-import {success} from '../utils/notifications';
+import { TSetting, TSettings } from '../../types';
+import { ISettingsSubscriber } from '../../interfaces';
+import { APP_SETTINGS } from '../../shared/appSettings';
+import { subscribeToSettings } from '../../shared/browserApi';
+import { SettingsProvider } from '../../shared/settingsProvider';
+import { success } from '../utils/notifications';
 
 export type TListener = (settingName: APP_SETTINGS, value: TSetting) => void;
 

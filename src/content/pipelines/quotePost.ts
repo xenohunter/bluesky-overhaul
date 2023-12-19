@@ -1,9 +1,9 @@
-import {COMPOSE_CONTENT_EDITABLE, COMPOSE_LINK_CARD_BUTTON} from '../dom/selectors';
-import {log} from '../utils/logger';
-import {typeText, backspace} from '../utils/text';
-import {Pipeline} from './pipeline';
-import {ultimatelyFind} from '../dom/utils';
-import {EventKeeper} from '../utils/eventKeeper';
+import { COMPOSE_CONTENT_EDITABLE, COMPOSE_LINK_CARD_BUTTON } from '../dom/selectors';
+import { log } from '../utils/logger';
+import { typeText, backspace } from '../utils/text';
+import { Pipeline } from './pipeline';
+import { ultimatelyFind } from '../dom/utils';
+import { EventKeeper } from '../utils/eventKeeper';
 
 const STAGING_URL_REGEX = /.*(https:\/\/staging\.bsky\.app\/profile\/.*\/post\/.*\/?)$/;
 const URL_REGEX = /.*(https:\/\/bsky\.app\/profile\/.*\/post\/.*\/?)$/;

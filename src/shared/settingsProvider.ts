@@ -1,9 +1,9 @@
-import {TSetting, TSettings} from '../types';
-import {APP_SETTINGS, DEFAULT_SETTINGS} from './appSettings';
-import {getSettings, setSettings} from './browserApi';
-import {compareSemver} from './misc';
-import {BLUESKY_OVERHAUL_VERSION} from './version';
-import {log} from '../content/utils/logger';
+import { TSetting, TSettings } from '../types';
+import { APP_SETTINGS, DEFAULT_SETTINGS } from './appSettings';
+import { getSettings, setSettings } from './browserApi';
+import { compareSemver } from './misc';
+import { BLUESKY_OVERHAUL_VERSION } from './version';
+import { log } from '../content/utils/logger';
 
 const possiblyMigrate = async (settings: TSettings): Promise<TSettings> => {
   const lastUpdatedVersion = settings[APP_SETTINGS.SETTINGS_LAST_UPDATED_VERSION] as string;
@@ -31,8 +31,8 @@ export class SettingsProvider {
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     const savedSettings = await getSettings();
-    const migratedSettings = await possiblyMigrate(savedSettings);
-    this.settings = {...DEFAULT_SETTINGS, ...migratedSettings};
+    const migratedSettings = await possiblyMigrate({...DEFAULT_SETTINGS, ...savedSettings});
+    this.settings = migratedSettings;
     this.isInitialized = true;
   }
 

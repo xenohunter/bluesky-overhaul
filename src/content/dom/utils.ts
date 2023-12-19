@@ -1,5 +1,5 @@
-import {Selector} from './selector';
-import {SelectorGroup} from './selectorGroup';
+import { Selector } from './selector';
+import { SelectorGroup } from './selectorGroup';
 
 export type TSelectorLike = Selector | SelectorGroup;
 type TSelectorOrArray = TSelectorLike | TSelectorLike[];

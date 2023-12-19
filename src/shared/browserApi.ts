@@ -1,4 +1,4 @@
-import {TSettings} from '../types';
+import { TSettings } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

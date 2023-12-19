@@ -1,5 +1,5 @@
-import {Post} from '@atproto/api/dist/src/types/app/bsky/getPostThread';
-import {BskyAgent} from '@atproto/api';
+import { Post } from '@atproto/api/dist/src/types/app/bsky/getPostThread';
+import { BskyAgent } from '@atproto/api';
 
 export class LoginError extends Error {}
 

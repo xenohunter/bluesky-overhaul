@@ -1,9 +1,9 @@
-import {IPausable} from '../../interfaces';
-import {log} from '../utils/logger';
-import {Pipeline} from './pipeline';
-import {EventKeeper} from '../utils/eventKeeper';
-import {COMPOSE_CANCEL_BUTTON, COMPOSE_CONTENT_EDITABLE} from '../dom/selectors';
-import {ultimatelyFind} from '../dom/utils';
+import { IPausable } from '../../interfaces';
+import { log } from '../utils/logger';
+import { Pipeline } from './pipeline';
+import { EventKeeper } from '../utils/eventKeeper';
+import { COMPOSE_CANCEL_BUTTON, COMPOSE_CONTENT_EDITABLE } from '../dom/selectors';
+import { ultimatelyFind } from '../dom/utils';
 
 
 export class PostModalPipeline extends Pipeline implements IPausable {

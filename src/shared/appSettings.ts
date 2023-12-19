@@ -1,4 +1,4 @@
-import {TSettings} from '../types';
+import { TSettings } from '../types';
 
 export enum APP_SETTINGS {
   SETTINGS_LAST_UPDATED_VERSION = 'settings-last-updated-version',
