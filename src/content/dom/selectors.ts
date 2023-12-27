@@ -7,7 +7,7 @@ import { SelectorGroup } from './selectorGroup';
 export const FIRST_CHILD = new Selector(FIRST_CHILD_MARKER);
 export const LAST_CHILD = new Selector(LAST_CHILD_MARKER);
 
-export const ROOT_CONTAINER = new Selector('#root > div > div > div');
+export const ROOT_CONTAINER = new Selector('#root > div > div > div > div > div');
 export const FEED_CONTAINER = [FIRST_CHILD, FIRST_CHILD, FIRST_CHILD]; // relative to ROOT_CONTAINER
 export const MODAL_CONTAINER = LAST_CHILD; // relative to ROOT_CONTAINER
 

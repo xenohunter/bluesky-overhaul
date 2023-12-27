@@ -27,9 +27,8 @@ const run = async (): Promise<void> => {
 
   return ultimatelyFind(document.body, ROOT_CONTAINER).then((rootContainer) => Promise.all([
     Promise.resolve(rootContainer),
-    ultimatelyFind(rootContainer, FEED_CONTAINER),
-    ultimatelyFind(rootContainer, MODAL_CONTAINER)
-  ]).then(([rootContainer, feedContainer, modalContainer]) => {
+    ultimatelyFind(rootContainer, FEED_CONTAINER)
+  ]).then(([rootContainer, feedContainer]) => {
     const countersConcealer = new CountersConcealer(document.body);
     settingsManager.subscribe(countersConcealer);
     countersConcealer.watch();
@@ -54,19 +53,24 @@ const run = async (): Promise<void> => {
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.target === modalContainer) {
-          const composePostModal = modalContainer.querySelector(COMPOSE_MODAL.selector) as HTMLElement | null;
-          if (composePostModal !== null) {
-            pipelineManager.terminateExcept('compose');
-            pipelineManager.deploy('compose', composePostModal);
-          } else {
+        const target = mutation.target as HTMLElement;
+        if (target === rootContainer) {
+          if (mutation.addedNodes.length > 0) {
+            ultimatelyFind(rootContainer, MODAL_CONTAINER).then((modalContainer) => {
+              const composePostModal = modalContainer.querySelector(COMPOSE_MODAL.selector) as HTMLElement | null;
+              if (composePostModal !== null) {
+                pipelineManager.terminateExcept('compose');
+                pipelineManager.deploy('compose', composePostModal);
+              }
+            });
+          } else if (mutation.removedNodes.length > 0) {
             pipelineManager.terminateAll();
           }
         }
       });
     });
 
-    observer.observe(modalContainer, {childList: true, subtree: true});
+    observer.observe(rootContainer, {childList: true});
   }));
 };
 
@@ -76,7 +80,7 @@ run().then(() => {
   if (e === EXTENSION_DISABLED_CODE) return;
   setTimeout(() => {
     run().then(() => {
-      log(`Launched after the second attempt (1000ms delay) [${BLUESKY_OVERHAUL_VERSION}]`);
+      log(`Launched on the second attempt (1000ms delay) [${BLUESKY_OVERHAUL_VERSION}]`);
     }).catch((e) => {
       if (e === EXTENSION_DISABLED_CODE) return;
       console.error(`Failed to launch Bluesky Overhaul. Please, copy the error and report this issue: ${REPO_LINK}`);
