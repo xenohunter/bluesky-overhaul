@@ -1,3 +1,15 @@
+# Important!
+
+This project has been terminated.
+
+Everything below is history.
+
+You can use the code for whatever though.
+
+---
+---
+---
+
 # Bluesky Overhaul
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/cllpkmbebfmadmkkpplnaaffnhjjpgbi)](https://chrome.google.com/webstore/detail/bluesky-overhaul/cllpkmbebfmadmkkpplnaaffnhjjpgbi)
